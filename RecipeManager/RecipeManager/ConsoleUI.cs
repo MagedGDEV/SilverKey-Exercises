@@ -2,7 +2,7 @@
 using Spectre.Console;
 public class ConsoleUI
 {
-	bool EntryPoint;
+	private bool EntryPoint;
 	public ConsoleUI()
 	{
 		EntryPoint = true;
@@ -27,6 +27,12 @@ public class ConsoleUI
 		AnsiConsole.Write("\n");
 	}
 
+	public void ExitMessage()
+	{
+		var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you[/]").Centered();
+		AnsiConsole.Write(goodByeMessage);
+	}
+
 	public void WelcomeChoices()
 	{
 		if (EntryPoint)
@@ -47,14 +53,12 @@ public class ConsoleUI
 				RecipeChoices();
 				break;
 			case "Categories":
-
+				CategoryChoices();
 				break;
 			default:
-				var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you[/]").Centered();
-				AnsiConsole.Write(goodByeMessage);
+				ExitMessage();
 				break;
 		}
-
 	}
 
 	public void RecipeChoices()
@@ -85,8 +89,35 @@ public class ConsoleUI
 				WelcomeChoices();
 				break;
 			default:
-				var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you[/]").Centered();
-				AnsiConsole.Write(goodByeMessage);
+				ExitMessage();
+				break;
+		}
+	}
+
+	public void CategoryChoices()
+    {
+		string[] choices = { "Add category", "Edit category", "Delete category", "Back", "Exit" };
+		var userChoice = AnsiConsole.Prompt(
+		new SelectionPrompt<string>()
+		.Title("[blue]What are you looking for in category's options ?[/]")
+		.PageSize(5)
+		.AddChoices(choices));
+		switch (userChoice)
+		{
+			case "Add category":
+				//TODO: add category
+				break;
+			case "Edit category":
+				//TODO: show categories title as choices
+				break;
+			case "Delete category":
+				//TODO: show categories title as choices
+				break;
+			case "Back":
+				WelcomeChoices();
+				break;
+			default:
+				ExitMessage();
 				break;
 		}
 	}
