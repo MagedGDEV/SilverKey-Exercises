@@ -3,15 +3,17 @@ using Spectre.Console;
 public class ConsoleUI
 {
 	private bool EntryPoint;
+	RecipeManagement Manager;
 	public ConsoleUI()
 	{
 		EntryPoint = true;
+		Manager = new();
 		ConsoleTitle();
 		WelcomeMessage();
 		WelcomeChoices();
 	}
 
-	public void ConsoleTitle()
+	private void ConsoleTitle()
 	{
 		var titleText = new FigletText("Recipe Manager").Centered().Color(Color.Blue);
 		var roundedPanel = new Panel(titleText).DoubleBorder();
@@ -19,7 +21,7 @@ public class ConsoleUI
 
 	}
 
-	public void WelcomeMessage()
+	private void WelcomeMessage()
 	{	
 		AnsiConsole.Write("\n");
 		var welcomeText = new Markup("[bold yellow]Welcome to Recipe Manager [/]").Centered();
@@ -27,13 +29,13 @@ public class ConsoleUI
 		AnsiConsole.Write("\n");
 	}
 
-	public void ExitMessage()
+	private void ExitMessage()
 	{
 		var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you[/]").Centered();
 		AnsiConsole.Write(goodByeMessage);
 	}
 
-	public void WelcomeChoices()
+	private void WelcomeChoices()
 	{
 		if (EntryPoint)
         {
@@ -61,9 +63,13 @@ public class ConsoleUI
 		}
 	}
 
-	public void RecipeChoices()
+	private void RecipeChoices()
     {
-		
+		if (EntryPoint)
+		{
+			AnsiConsole.Write("\n");
+			EntryPoint = false;
+		}
 		string[] choices = { "List recipes", "Add recipe", "Edit recipe", "Delete recipe","Back","Exit" };
 		var userChoice = AnsiConsole.Prompt(
 		new SelectionPrompt<string>()
@@ -94,8 +100,13 @@ public class ConsoleUI
 		}
 	}
 
-	public void CategoryChoices()
+	private void CategoryChoices()
     {
+		if (EntryPoint)
+		{
+			AnsiConsole.Write("\n");
+			EntryPoint = false;
+		}
 		string[] choices = { "Add category", "Edit category", "Delete category", "Back", "Exit" };
 		var userChoice = AnsiConsole.Prompt(
 		new SelectionPrompt<string>()
@@ -105,10 +116,10 @@ public class ConsoleUI
 		switch (userChoice)
 		{
 			case "Add category":
-				//TODO: add category
+				AddCategory();
 				break;
 			case "Edit category":
-				//TODO: show categories title as choices
+				EditCategory();
 				break;
 			case "Delete category":
 				//TODO: show categories title as choices
@@ -121,4 +132,66 @@ public class ConsoleUI
 				break;
 		}
 	}
+
+	private void AddCategory()
+    {
+		var category = AnsiConsole.Prompt(
+		new TextPrompt<string>("[blue]Enter the category name[/]?")
+		.PromptStyle("red")
+		);
+		Manager.AddCategory(category);
+		AnsiConsole.Write(new Markup("[red]saved[/]"));
+		Thread.Sleep(1000);
+		AnsiConsole.Clear();
+		ReDraw(false);
+	}
+
+	private void EditCategory()
+    {
+		ArgumentNullException.ThrowIfNull(Manager.Categories);
+		string[] choices = { "Back", "Exit" };
+		if (Manager.Categories.Count == 0)
+		{
+			var userChoice = AnsiConsole.Prompt(
+			new SelectionPrompt<string>()
+			.Title("[blue]No categories to edit[red] please add categories[/][/]")
+			.PageSize(5)
+			.AddChoices(choices));
+			switch (userChoice)
+			{
+				case "Back":
+					CategoryChoices();
+					break;
+				default:
+					ExitMessage();
+					break;
+			}
+
+		}
+		else
+		{
+			var display = Manager.Categories.ToArray();
+			display = display.Concat(choices).ToArray();
+			var userChoice = AnsiConsole.Prompt(
+			new SelectionPrompt<string>()
+			.Title("[blue]Which category do you want to edit?[/]")
+			.PageSize(5)
+			.AddChoices(display));
+		}
+	}
+
+	private void ReDraw(bool menu)
+    {
+		EntryPoint = true;
+		ConsoleTitle();
+		WelcomeMessage();
+		if (menu)
+        {
+			RecipeChoices();
+        }
+		else
+        {
+			CategoryChoices();
+        }
+    }
 }

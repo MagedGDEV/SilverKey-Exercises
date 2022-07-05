@@ -19,6 +19,12 @@ public class RecipeManagement
 		ArgumentNullException.ThrowIfNull(Categories);
 		Console.Write(Categories.Count);
     }
+
+	public void AddCategory(string category)
+    {
+		ArgumentNullException.ThrowIfNull(Categories);
+		Categories.Add(category);
+    }
 }
 
 
