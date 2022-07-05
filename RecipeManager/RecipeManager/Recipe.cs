@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-public class Recipie
+public class Recipe
 {
 	public Guid Id;
 	public string Title { get; set; }
@@ -9,7 +9,7 @@ public class Recipie
 	public List<string> Instructions { get; set; }
 	public List<string> Categories { get; set; }
 
-	public Recipie(Guid guid, string title, List<string> ingredients, List<string> instructions, List<string> categories)
+	public Recipe(Guid guid, string title, List<string> ingredients, List<string> instructions, List<string> categories)
 	{
 		Id = guid;
 		Title = title;
