@@ -3,17 +3,19 @@ using System.Collections;
 
 public class Recipie
 {
+	public Guid Id;
 	public string Title { get; set; }
 	public List<string> Ingredients { get; set; }
 	public List<string> Instructions { get; set; }
 	public List<string> Categories { get; set; }
 
-	public Recipie(string title, List<string> ingredients, List<string> instructions, List<string> categories)
+	public Recipie(Guid guid, string title, List<string> ingredients, List<string> instructions, List<string> categories)
 	{
+		Id = guid;
 		Title = title;
-		Ingredients = ingredients;
-		Instructions = instructions;
-		Categories = categories;
+		Ingredients = new(ingredients);
+		Instructions = new(instructions);
+		Categories = new(categories);
 	}
 
 	public void DeleteData(string item, string listName)
@@ -27,7 +29,7 @@ public class Recipie
 			}
 			else
 			{
-				// report item not in list 
+				//TODO: report item not in list 
 			}
 		}
 		else if (listName == "INSTRUCTIONS")
@@ -38,7 +40,7 @@ public class Recipie
 			}
 			else
 			{
-				// report item not in list 
+				//TODO: report item not in list 
 			}
 		}
 		else if (listName == "CATEGORIES")
@@ -49,12 +51,12 @@ public class Recipie
 			}
 			else
 			{
-				// report item not in list 
+				//TODO: report item not in list 
 			}
 		}
 		else
 		{
-			// report invalid list 
+			//TODO: report invalid list 
 		}
 	}
 
@@ -65,7 +67,7 @@ public class Recipie
 		{
 			if (Ingredients.Contains(item))
 			{
-				// report item already available
+				//TODO: report item already available
 			}
 			else
 			{
@@ -76,7 +78,7 @@ public class Recipie
 		{
 			if (Instructions.Contains(item))
 			{
-				// report item already available
+				//TODO: report item already available
 			}
 			else
 			{
@@ -87,7 +89,7 @@ public class Recipie
 		{
 			if (Categories.Contains(item))
 			{
-				// report item already available
+				//TODO: report item already available
 			}
 			else
 			{
@@ -96,12 +98,13 @@ public class Recipie
 		}
 		else
 		{
-			// report invalid list 
+			//TODO: report invalid list 
 		}
 	}
 
-	public void printRecipe()
-	{
+	// for testing the above functions only
+	public void PrintRecipe()
+	{ 
 		Console.WriteLine("Recipe " + Title);
 		Console.WriteLine("Ingredients");
 		foreach (string ingredient in Ingredients)
