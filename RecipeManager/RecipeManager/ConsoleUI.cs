@@ -24,14 +24,15 @@ public class ConsoleUI
 	private void WelcomeMessage()
 	{	
 		AnsiConsole.Write("\n");
-		var welcomeText = new Markup("[bold yellow]Welcome to Recipe Manager [/]").Centered();
+		var welcomeText = new Markup("[bold yellow]Welcome to Recipe Manager :stuffed_flatbread:[/]").Centered();
 		AnsiConsole.Write(welcomeText);
 		AnsiConsole.Write("\n");
 	}
 
 	private void ExitMessage()
 	{
-		var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you[/]").Centered();
+		Manager.Serialize();
+		var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you :smiling_face_with_smiling_eyes:[/]").Centered();
 		AnsiConsole.Write(goodByeMessage);
 	}
 
@@ -48,7 +49,6 @@ public class ConsoleUI
 		.Title("[blue]What are you looking for to do today ?[/]")
 		.PageSize(3)
 		.AddChoices(choices));
-
 		switch (userChoice)
         {
 			case "Recipes":
@@ -119,10 +119,10 @@ public class ConsoleUI
 				AddCategory();
 				break;
 			case "Edit category":
-				EditCategory();
+				CategoryView(true);
 				break;
 			case "Delete category":
-				//TODO: show categories title as choices
+				CategoryView(false);
 				break;
 			case "Back":
 				WelcomeChoices();
@@ -136,17 +136,24 @@ public class ConsoleUI
 	private void AddCategory()
     {
 		var category = AnsiConsole.Prompt(
-		new TextPrompt<string>("[blue]Enter the category name[/]?")
+		new TextPrompt<string>("[blue]Enter the category name:[/]")
 		.PromptStyle("red")
 		);
-		Manager.AddCategory(category);
-		AnsiConsole.Write(new Markup("[red]saved[/]"));
+		bool added = Manager.AddCategory(category);
+		if (added)
+        {
+			AnsiConsole.Write(new Markup("[red]saved[/]"));
+		}
+		else
+        {
+			AnsiConsole.Write(new Markup("[red]item is already available[/]"));
+		}
 		Thread.Sleep(1000);
 		AnsiConsole.Clear();
 		ReDraw(false);
 	}
 
-	private void EditCategory()
+	private void CategoryView(bool action)
     {
 		ArgumentNullException.ThrowIfNull(Manager.Categories);
 		string[] choices = { "Back", "Exit" };
@@ -177,7 +184,48 @@ public class ConsoleUI
 			.Title("[blue]Which category do you want to edit?[/]")
 			.PageSize(5)
 			.AddChoices(display));
+			switch (userChoice)
+			{
+				case "Back":
+					CategoryChoices();
+					break;
+				case "Exit":
+					ExitMessage();
+					break;
+				default:
+					if (action)
+                    {
+						EditCategory(userChoice);
+					}
+                    else
+                    {
+						DeleteCategory(userChoice);
+                    }
+					break;
+			}
 		}
+	}
+
+	private void DeleteCategory(string category)
+    {
+		var deleteText = new Markup($"[red]{category}[/][blue] is deleted[/]");
+		AnsiConsole.Write(deleteText);
+		Manager.DeleteCategory(category);
+		Thread.Sleep(1000);
+		AnsiConsole.Clear();
+		ReDraw(false);
+	}
+	private void EditCategory(string category)
+    {
+		var updatedCategory = AnsiConsole.Prompt(
+		new TextPrompt<string>($"[blue]Edit category [green]{category}[/] to:[/]")
+		.PromptStyle("red")
+		);
+		Manager.EditCategory(category, updatedCategory);
+		AnsiConsole.Write(new Markup("[red]saved[/]"));
+		Thread.Sleep(1000);
+		AnsiConsole.Clear();
+		ReDraw(false);
 	}
 
 	private void ReDraw(bool menu)

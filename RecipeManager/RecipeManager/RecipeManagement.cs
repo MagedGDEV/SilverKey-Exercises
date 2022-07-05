@@ -10,21 +10,53 @@ public class RecipeManagement
 	{
 		Categories = new();
 		Recipes = new();
+		ReadCategories();
 	}
 
-	public void ReadCategories()
+	private void ReadCategories()
     {
 		string jsonString = File.ReadAllText(CategoriesFileName);
 		Categories = JsonSerializer.Deserialize<List<string>>(jsonString);
 		ArgumentNullException.ThrowIfNull(Categories);
-		Console.Write(Categories.Count);
+		
     }
 
-	public void AddCategory(string category)
+	private void WriteCategory()
+    {
+		string jsonString = JsonSerializer.Serialize(Categories);
+		File.WriteAllText(CategoriesFileName, jsonString);
+    }
+
+	public void Serialize()
+    {
+		WriteCategory();
+		//TODO: add writing recipies in json file 
+    }
+
+	public bool AddCategory(string category)
     {
 		ArgumentNullException.ThrowIfNull(Categories);
+		if (Categories.Contains(category))
+        {
+			return false;
+        }
 		Categories.Add(category);
+		return true;
     }
+
+	public void EditCategory(string category, string updated)
+    {
+		ArgumentNullException.ThrowIfNull(Categories);
+		int index = Categories.IndexOf(category);
+		Categories[index] = updated;
+    }
+
+	public void DeleteCategory (string category)
+    {
+		ArgumentNullException.ThrowIfNull(Categories);
+		Categories.Remove(category);
+		//TODO: Remove category from Recipes
+	}
 }
 
 
