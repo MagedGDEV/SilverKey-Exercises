@@ -26,3 +26,9 @@
 
 #### Exiting console
 <img width="765" alt="Screen Shot 2022-07-06 at 1 35 47 AM" src="https://user-images.githubusercontent.com/98350741/177435986-86651214-6610-404c-8452-b27a5e1cf226.png">
+
+##### Adding Recipe
+<img width="1196" alt="Screen Shot 2022-07-07 at 12 32 55 AM" src="https://user-images.githubusercontent.com/98350741/177655714-bb01fe4d-76d2-4813-b318-27178253cadb.png">
+
+#### Listing Recipes
+<img width="1196" alt="Screen Shot 2022-07-07 at 12 33 51 AM" src="https://user-images.githubusercontent.com/98350741/177655742-e0f17bf5-9efb-45a3-a761-1e203b778e2e.png">
