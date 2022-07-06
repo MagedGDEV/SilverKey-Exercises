@@ -1,7 +1,4 @@
-﻿using System;
-using Spectre.Console;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Spectre.Console;
 using System.Text;
 public class ConsoleUI
 {
@@ -84,9 +81,9 @@ public class ConsoleUI
         {
 			case "List recipes":
 				//TODO: view recipes
+				ListRecipe();
 				break;
 			case "Add recipe":
-				//TODO: add recipes
 				AddRecipe();
 				break;
 			case "Edit recipe":
@@ -104,11 +101,13 @@ public class ConsoleUI
 		}
 	}
 
+
 	private List<string> RecipeQuestions (string listName)
     {
 		List<string> inputList = new();
 		var questionText = new Markup($"[blue]What are the [green]{listName}[/] of the recipe?[/]");
 		AnsiConsole.Write(questionText);
+		AnsiConsole.Write("\n");
         while (true)
         {
 			string input = AnsiConsole.Prompt(new TextPrompt<string>("").PromptStyle("red"));
@@ -118,6 +117,63 @@ public class ConsoleUI
         }
 		return inputList;
     }
+
+	private void ListRecipe()
+    {
+		var table = new Table();
+		table.AddColumn("Title");
+		table.AddColumn("Ingredients");
+		table.AddColumn("Instructions");
+		table.AddColumn("Categories");
+		foreach (KeyValuePair<Guid, Recipe> recipe in Manager.Recipes)
+		{
+			var rowData = recipe.Value;
+			table.AddRow(rowData.Title, ListView(rowData.Ingredients), ListView(rowData.Instructions), ListCategory(rowData.Categories));
+		}
+		AnsiConsole.Write(table);
+		AnsiConsole.Write("\n");
+		string[] choices = { "Back", "Exit" };
+		var userChoice = AnsiConsole.Prompt(
+		new SelectionPrompt<string>()
+		.Title($"[blue]What would you like to do now?[/]")
+		.PageSize(5)
+		.AddChoices(choices));
+		switch (userChoice)
+		{
+			case "Back":
+				AnsiConsole.Clear();
+				ReDraw(true);
+				break;
+			default:
+				AnsiConsole.Clear();
+				ConsoleTitle();
+				WelcomeMessage();
+				AnsiConsole.Write("\n");
+				ExitMessage();
+				break;
+		}		
+	}
+
+	private string ListView(List<string> list)
+    {
+		var view = new StringBuilder();
+		for (int i = 0; i < list.Count; i++)
+        {
+			view.Append((i+1)+"- "+list[i]+"\n");
+        }
+		return view.ToString();
+    }
+
+	private string ListCategory(List <string> categories)
+    {
+		var view = new StringBuilder();
+		for (int i = 0; i < categories.Count; i++)
+		{
+			view.Append(categories[i] + "\n");
+		}
+		return view.ToString();
+	}
+
 	private void AddRecipe()
     {
 		ArgumentNullException.ThrowIfNull(Manager.Categories);

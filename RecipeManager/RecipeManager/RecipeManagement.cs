@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 public class RecipeManagement
 {
@@ -13,6 +12,15 @@ public class RecipeManagement
 		Categories = new();
 		Recipes = new();
 		ReadCategories();
+		ReadRecipes();
+	}
+
+	private void ReadRecipes()
+    {
+		string jsonString = File.ReadAllText(RecipesFileName);
+		var returnedData = JsonSerializer.Deserialize<Dictionary<Guid, Recipe>>(jsonString);
+		ArgumentNullException.ThrowIfNull(returnedData);
+		Recipes = returnedData;
 	}
 
 	private void ReadCategories()
@@ -20,8 +28,7 @@ public class RecipeManagement
 		string jsonString = File.ReadAllText(CategoriesFileName);
 		Categories = JsonSerializer.Deserialize<List<string>>(jsonString);
 		ArgumentNullException.ThrowIfNull(Categories);
-		
-    }
+	}
 
 	private void WriteCategory()
     {
@@ -29,11 +36,18 @@ public class RecipeManagement
 		File.WriteAllText(CategoriesFileName, jsonString);
     }
 
+	private void WriteRecipe()
+    {
+		string jsonString = JsonSerializer.Serialize(Recipes);
+		File.WriteAllText(RecipesFileName, jsonString);
+    }
+
 	public void Serialize()
     {
 		WriteCategory();
-		//TODO: add writing recipies in json file 
-    }
+		WriteRecipe();
+		
+	}
 
 	public bool AddCategory(string category)
     {
@@ -51,6 +65,7 @@ public class RecipeManagement
 		ArgumentNullException.ThrowIfNull(Categories);
 		int index = Categories.IndexOf(category);
 		Categories[index] = updated;
+		//TODO: Edit category in Recipes
     }
 
 	public void DeleteCategory (string category)
@@ -63,7 +78,7 @@ public class RecipeManagement
 	public void AddRecipe(string title, List<string> ingredients, List<string> instructions, List<string> categories)
 	{
 		Guid id = Guid.NewGuid();
-		var recipe = new Recipe(id, title, ingredients, instructions, categories);
+		var recipe = new Recipe(title, ingredients, instructions, categories);
         Recipes.Add(id, recipe);
     }
 }
