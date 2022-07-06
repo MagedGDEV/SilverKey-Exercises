@@ -1,9 +1,12 @@
 ﻿using System;
 using Spectre.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 public class ConsoleUI
 {
 	private bool EntryPoint;
-	RecipeManagement Manager;
+	private RecipeManagement Manager;
 	public ConsoleUI()
 	{
 		EntryPoint = true;
@@ -84,6 +87,7 @@ public class ConsoleUI
 				break;
 			case "Add recipe":
 				//TODO: add recipes
+				AddRecipe();
 				break;
 			case "Edit recipe":
 				//TODO: show recipes title as choices
@@ -97,6 +101,71 @@ public class ConsoleUI
 			default:
 				ExitMessage();
 				break;
+		}
+	}
+
+	private List<string> RecipeQuestions (string listName)
+    {
+		List<string> inputList = new();
+		var questionText = new Markup($"[blue]What are the [green]{listName}[/] of the recipe?[/]");
+		AnsiConsole.Write(questionText);
+        while (true)
+        {
+			string input = AnsiConsole.Prompt(new TextPrompt<string>("").PromptStyle("red"));
+			if (input.ToUpper() == "DONE")
+				break;
+			inputList.Add(input);
+        }
+		return inputList;
+    }
+	private void AddRecipe()
+    {
+		ArgumentNullException.ThrowIfNull(Manager.Categories);
+		if (Manager.Categories.Count == 0)
+        {
+			string[] choices = { "Back", "Exit" };
+			var userChoice = AnsiConsole.Prompt(
+			new SelectionPrompt<string>()
+			.Title($"[blue]No categories available to choose for the recipe[red] please add categories first[/][/]")
+			.PageSize(5)
+			.AddChoices(choices));
+			switch (userChoice)
+			{
+				case "Back":
+					RecipeChoices();
+					break;
+				default:
+					ExitMessage();
+					break;
+			}
+		}
+		else
+        {
+			var title = AnsiConsole.Prompt(
+			new TextPrompt<string>($"\n[blue]What is the [green]title[/] of the recipe?[/]")
+			.PromptStyle("red")
+			);
+			List<string> ingredients = RecipeQuestions("ingredients");
+			List<string> instructions = RecipeQuestions("instructions");
+			
+			List<string> categories = AnsiConsole.Prompt(
+			new MultiSelectionPrompt<string>()
+			.Title("[blue]What are the [green]categories[/] of the recipe?[/]")
+			.PageSize(10)
+			.InstructionsText(
+				"[grey](Press [blue]<space>[/] to toggle a category, " +
+				"[green]<enter>[/] to accept)[/]")
+			.AddChoices(Manager.Categories
+			));
+			Manager.AddRecipe(title, ingredients, instructions, categories);
+			AnsiConsole.Clear();
+			ConsoleTitle();
+			WelcomeMessage();
+			AnsiConsole.Write("\n");
+			AnsiConsole.Write(new Markup("[red]Saved[/]"));
+			Thread.Sleep(1000);
+			AnsiConsole.Clear();
+			ReDraw(true);
 		}
 	}
 
@@ -157,11 +226,20 @@ public class ConsoleUI
     {
 		ArgumentNullException.ThrowIfNull(Manager.Categories);
 		string[] choices = { "Back", "Exit" };
+		string text;
+		if (action)
+		{
+			text = "edit";
+		}
+		else
+		{
+			text = "delete";
+		}
 		if (Manager.Categories.Count == 0)
 		{
 			var userChoice = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-			.Title("[blue]No categories to edit[red] please add categories[/][/]")
+			.Title($"[blue]No categories to {text}[red] please add categories[/][/]")
 			.PageSize(5)
 			.AddChoices(choices));
 			switch (userChoice)
@@ -179,9 +257,10 @@ public class ConsoleUI
 		{
 			var display = Manager.Categories.ToArray();
 			display = display.Concat(choices).ToArray();
+			
 			var userChoice = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-			.Title("[blue]Which category do you want to edit?[/]")
+			.Title($"[blue]Which category do you want to {text}?[/]")
 			.PageSize(5)
 			.AddChoices(display));
 			switch (userChoice)

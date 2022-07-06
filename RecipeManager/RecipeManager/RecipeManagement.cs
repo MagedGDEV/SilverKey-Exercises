@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Text.Json;
+
 public class RecipeManagement
 {
 	public Dictionary<Guid, Recipe> Recipes { get; set; }
 	public List<string>? Categories { get; set; }
 	private const string RecipesFileName = "Recipes.json";
 	private const string CategoriesFileName = "Categories.json";
+	
 	public RecipeManagement()
 	{
 		Categories = new();
@@ -57,6 +59,11 @@ public class RecipeManagement
 		Categories.Remove(category);
 		//TODO: Remove category from Recipes
 	}
+
+	public void AddRecipe(string title, List<string> ingredients, List<string> instructions, List<string> categories)
+	{
+		Guid id = Guid.NewGuid();
+		var recipe = new Recipe(id, title, ingredients, instructions, categories);
+        Recipes.Add(id, recipe);
+    }
 }
-
-

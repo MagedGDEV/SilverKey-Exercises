@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-
-public class Recipe
+﻿public class Recipe
 {
 	public Guid Id;
 	public string Title { get; set; }
@@ -104,7 +101,7 @@ public class Recipe
 
 	// for testing the above functions only
 	public void PrintRecipe()
-	{ 
+	{
 		Console.WriteLine("Recipe " + Title);
 		Console.WriteLine("Ingredients");
 		foreach (string ingredient in Ingredients)
@@ -121,7 +118,6 @@ public class Recipe
 		{
 			Console.Write(Category + " ");
 		}
-        Console.WriteLine("\n------------");
+		Console.WriteLine("\n------------");
 	}
 }
-
