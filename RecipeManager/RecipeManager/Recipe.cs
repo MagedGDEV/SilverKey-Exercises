@@ -96,6 +96,11 @@
 		}
 	}
 
+	public void EditTitle(string newTitle)
+    {
+		Title = newTitle;
+    }
+
 	// for testing the above functions only
 	public void PrintRecipe()
 	{

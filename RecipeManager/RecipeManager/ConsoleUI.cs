@@ -80,18 +80,15 @@ public class ConsoleUI
 		switch (userChoice)
         {
 			case "List recipes":
-				//TODO: view recipes
 				ListRecipe();
 				break;
 			case "Add recipe":
 				AddRecipe();
 				break;
 			case "Edit recipe":
-				//TODO: show recipes title as choices
 				RecipesMenu("edit");
 				break;
 			case "Delete recipe":
-				
 				RecipesMenu("delete");
 				break;
 			case "Back":
@@ -103,7 +100,7 @@ public class ConsoleUI
 		}
 	}
 
-	private void RecipesMenu (string text)
+	private void RecipesMenu(string text)
     {
 		string[] choices = { "Back", "Exit" };
 		if (_manager.Recipes.Count == 0)
@@ -147,7 +144,7 @@ public class ConsoleUI
 				default:
 					if (text == "edit")
                     {
-
+						EditRecipe(recipes[userChoice]);
                     }
 					else
                     {
@@ -159,29 +156,105 @@ public class ConsoleUI
 		
 	}
 
-	private void EditRecipe (Guid id)
+	private void EditRecipe(Guid id)
     {
+		var recipe = _manager.Recipes[id];
 		string[] choices = { "Title", "Ingredients", "Instructions", "Categories", "Back", "Exit"};
 		var userChoice = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-			.Title($"[blue]Which item do you which to edit?[/][/]")
+			.Title("[blue]Which item do you which to edit?[/]")
+			.PageSize(5)
+			.AddChoices(choices));
+        switch (userChoice)
+        {
+            case "Title":
+                //TODO: edit title of recipe
+                EditTitle(recipe.Title, id);
+                break;
+            case "Ingredients":
+                //TODO: edit ingredients of recipe
+                break;
+            case "Instructions":
+                //TODO: edit instructions of the recipe 
+                break;
+            case "Categories":
+                //TODO: edit categories of the recipe
+                break;
+            case "Back":
+                RecipesMenu("edit");
+                break;
+            default:
+                ExitMessage();
+                break;
+        }
+    }
+
+	private void EditTitle(string title, Guid id)
+    {
+		var updatedTitle = AnsiConsole.Prompt(
+		new TextPrompt<string>($"[blue]Edit recipe [green]{title}[/] to:[/]")
+		.PromptStyle("red")
+		);
+		_manager.Recipes[id].EditTitle(updatedTitle);
+		AnsiConsole.Write(new Markup("[red]saved[/]"));
+		Thread.Sleep(1000);
+		AnsiConsole.Clear();
+		EditRecipe(id);
+	}
+
+	private void EditListView (string listName, Guid id)
+    {
+		string[] choices = { "Edit", "Remove", "Add",  "Back", "Exit" };
+		var userChoice = AnsiConsole.Prompt(
+			new SelectionPrompt<string>()
+			.Title($"[blue]What would you like to do with recipe's {listName}?[/]")
 			.PageSize(5)
 			.AddChoices(choices));
 		switch (userChoice)
-		{
-			case "Title":
-
+        {
+			case "Add":
+				//TODO: add ingredient or instruction
+				break;
+			case "Edit":
+				//TODO: edit ingredients or instructions
+				break;
+			case "Delete":
+				//TODO: Delete ingredient or instruction
+				DeleteList(id, listName);
+				break;
 			case "Back":
-				RecipesMenu("edit");
+				EditRecipe(id);
 				break;
 			default:
 				ExitMessage();
 				break;
-		}
-
+        }
 	}
 
-	private void DeleteRecipe (Guid id, string recipeTitle)
+	private void DeleteList (Guid id, string listName)
+    {
+		var recipe = _manager.Recipes[id];
+		string[] choices = {"Back", "Exit" };
+		string [] deleteItems;
+		if (listName == "Ingredients")
+        {
+			deleteItems = recipe.Ingredients.Concat(choices).ToArray();
+		}
+		else
+        {
+			deleteItems = recipe.Instructions.Concat(choices).ToArray();
+		}
+
+		var userChoice = AnsiConsole.Prompt(
+		new SelectionPrompt<string>()
+		.Title($"[blue]Which {listName} would you like to delete?[/]")
+		.PageSize(5)
+		.AddChoices(deleteItems));
+
+		//TODO: delete item 
+	}
+
+	private void DeleteRecipe(Guid id, string recipeTitle)
     {
 		_manager.DeleteRecipe(id);
 		var deleteText = new Markup($"[red]{recipeTitle}[/][blue] is deleted[/]");
@@ -191,7 +264,7 @@ public class ConsoleUI
 		ReDraw(true);
 	}
 
-	private List<string> RecipeQuestions (string listName)
+	private List<string> RecipeQuestions(string listName)
     {
 		List<string> inputList = new();
 		var questionText = new Markup($"[blue]What are the [green]{listName}[/] of the recipe?[/]");
@@ -224,7 +297,7 @@ public class ConsoleUI
 		string[] choices = { "Back", "Exit" };
 		var userChoice = AnsiConsole.Prompt(
 		new SelectionPrompt<string>()
-		.Title($"[blue]What would you like to do now?[/]")
+		.Title("[blue]What would you like to do now?[/]")
 		.PageSize(5)
 		.AddChoices(choices));
 		switch (userChoice)
