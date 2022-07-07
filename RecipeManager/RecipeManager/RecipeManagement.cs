@@ -81,4 +81,9 @@ public class RecipeManagement
 		var recipe = new Recipe(title, ingredients, instructions, categories);
         Recipes.Add(id, recipe);
     }
+
+	public void DeleteRecipe (Guid id)
+    {
+		Recipes.Remove(id);
+    }
 }

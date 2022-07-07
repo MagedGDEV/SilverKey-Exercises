@@ -4,8 +4,7 @@
 	public List<string> Ingredients { get; set; }
 	public List<string> Instructions { get; set; }
 	public List<string> Categories { get; set; }
-
-	public Recipe( string title, List<string> ingredients, List<string> instructions, List<string> categories)
+	public Recipe(string title, List<string> ingredients, List<string> instructions, List<string> categories)
 	{
 		Title = title;
 		Ingredients = new(ingredients);
