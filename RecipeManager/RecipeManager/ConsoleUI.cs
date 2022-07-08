@@ -338,6 +338,8 @@ public class ConsoleUI
 		AnsiConsole.Write(new Markup("[red]saved[/]"));
 		Thread.Sleep(_sleepTime);
 		AnsiConsole.Clear();
+		ConsoleTitle();
+		WelcomeMessage();
 		EditRecipe(id);
 	}
 
