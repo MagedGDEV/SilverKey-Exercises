@@ -12,114 +12,56 @@
 		Categories = new(categories);
 	}
 
-	public void DeleteData(string item, string listName)
-	{
-		listName = listName.ToUpper();
-		if (listName == "INGREDIENTS")
-		{
-			if (Ingredients.Contains(item))
-			{
-				Ingredients.Remove(item);
-			}
-			else
-			{
-				//TODO: report item not in list 
-			}
-		}
-		else if (listName == "INSTRUCTIONS")
-		{
-			if (Instructions.Contains(item))
-			{
-				Instructions.Remove(item);
-			}
-			else
-			{
-				//TODO: report item not in list 
-			}
-		}
-		else if (listName == "CATEGORIES")
-		{
-			if (Categories.Contains(item))
-			{
-				Categories.Remove(item);
-			}
-			else
-			{
-				//TODO: report item not in list 
-			}
-		}
-		else
-		{
-			//TODO: report invalid list 
-		}
-	}
-
-	public void AddData(string item, string listName)
-	{
-		listName = listName.ToUpper();
-		if (listName == "INGREDIENTS")
-		{
-			if (Ingredients.Contains(item))
-			{
-				//TODO: report item already available
-			}
-			else
-			{
-				Ingredients.Add(item);
-			}
-		}
-		else if (listName == "INSTRUCTIONS")
-		{
-			if (Instructions.Contains(item))
-			{
-				//TODO: report item already available
-			}
-			else
-			{
-				Instructions.Add(item);
-			}
-		}
-		else if (listName == "CATEGORIES")
-		{
-			if (Categories.Contains(item))
-			{
-				//TODO: report item already available
-			}
-			else
-			{
-				Categories.Add(item);
-			}
-		}
-		else
-		{
-			//TODO: report invalid list 
-		}
-	}
-
 	public void EditTitle(string newTitle)
     {
 		Title = newTitle;
     }
 
-	// for testing the above functions only
-	public void PrintRecipe()
+	public void AddCategory(string category)
+    {
+		Categories.Add(category);
+    }
+
+	public void AddInstruction (string instruction, int index)
+    {
+		Instructions.Insert(index - 1, instruction);
+    }
+
+	public void AddIngredient(string ingredient, int index)
 	{
-		Console.WriteLine("Recipe " + Title);
-		Console.WriteLine("Ingredients");
-		foreach (string ingredient in Ingredients)
-		{
-			Console.Write(ingredient + " ");
-		}
-		Console.WriteLine("\nInstructions");
-		foreach (string instruction in Instructions)
-		{
-			Console.Write(instruction + " ");
-		}
-		Console.WriteLine("\nCategories");
-		foreach (string Category in Categories)
-		{
-			Console.Write(Category + " ");
-		}
-		Console.WriteLine("\n------------");
+		Ingredients.Insert(index - 1, ingredient);
+	}
+
+	public void EditInstruction (string oldInstruction, string newInstruction)
+    {
+		int index = Instructions.IndexOf(oldInstruction);
+		Instructions[index] = newInstruction;
+    }
+
+	public void EditIngredients(string oldIngredients, string newIngredients)
+	{
+		int index = Ingredients.IndexOf(oldIngredients);
+		Ingredients[index] = newIngredients;
+	}
+
+	public void DeleteIngredient(string itemToDelete)
+    {
+		Ingredients.Remove(itemToDelete);
+    }
+
+	public void DeleteInstructions(string itemToDelete)
+    {
+		Instructions.Remove(itemToDelete);
+    }
+
+	public void DeleteCategory (string itemToDelete)
+    {
+		Categories.Remove(itemToDelete);
+    }
+
+	public void EditCategory (string oldCategory, string newCategory)
+    {
+		int index = Categories.IndexOf(oldCategory);
+		Categories[index] = newCategory;
 	}
 }

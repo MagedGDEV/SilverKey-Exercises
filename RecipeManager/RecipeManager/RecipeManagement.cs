@@ -46,7 +46,6 @@ public class RecipeManagement
     {
 		WriteCategory();
 		WriteRecipe();
-		
 	}
 
 	public bool AddCategory(string category)
@@ -65,14 +64,26 @@ public class RecipeManagement
 		ArgumentNullException.ThrowIfNull(Categories);
 		int index = Categories.IndexOf(category);
 		Categories[index] = updated;
-		//TODO: Edit category in Recipes
-    }
+		foreach (KeyValuePair<Guid, Recipe> recipe in Recipes)
+        {
+			if (recipe.Value.Categories.Contains(category))
+            {
+				Recipes[recipe.Key].EditCategory(category, updated);
+            }
+        }
+	}
 
 	public void DeleteCategory (string category)
     {
 		ArgumentNullException.ThrowIfNull(Categories);
 		Categories.Remove(category);
-		//TODO: Remove category from Recipes
+		foreach (KeyValuePair<Guid, Recipe> recipe in Recipes)
+		{
+			if (recipe.Value.Categories.Contains(category))
+			{
+				Recipes[recipe.Key].DeleteCategory(category);
+			}
+		}
 	}
 
 	public void AddRecipe(string title, List<string> ingredients, List<string> instructions, List<string> categories)

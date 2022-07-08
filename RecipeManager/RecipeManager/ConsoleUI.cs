@@ -4,10 +4,12 @@ public class ConsoleUI
 {
 	private bool _entryPoint;
 	private RecipeManagement _manager;
+	private int _sleepTime;
 	public ConsoleUI()
 	{
 		_entryPoint = true;
 		_manager = new();
+		_sleepTime = 2000;
 		ConsoleTitle();
 		WelcomeMessage();
 		WelcomeChoices();
@@ -18,7 +20,6 @@ public class ConsoleUI
 		var titleText = new FigletText("Recipe Manager").Centered().Color(Color.Blue);
 		var roundedPanel = new Panel(titleText).DoubleBorder();
 		AnsiConsole.Write(roundedPanel);
-
 	}
 
 	private void WelcomeMessage()
@@ -76,7 +77,6 @@ public class ConsoleUI
 		.Title("[blue]What are you looking for in recipe's options ?[/]")
 		.PageSize(5)
 		.AddChoices(choices));
-
 		switch (userChoice)
         {
 			case "List recipes":
@@ -153,7 +153,6 @@ public class ConsoleUI
 					break;
 			}
 		}
-		
 	}
 
 	private void EditRecipe(Guid id)
@@ -168,18 +167,17 @@ public class ConsoleUI
         switch (userChoice)
         {
             case "Title":
-                //TODO: edit title of recipe
                 EditTitle(recipe.Title, id);
                 break;
             case "Ingredients":
-                //TODO: edit ingredients of recipe
+				EditListView("ingredients", id);
                 break;
             case "Instructions":
-                //TODO: edit instructions of the recipe 
+				EditListView("instructions", id);
                 break;
             case "Categories":
-                //TODO: edit categories of the recipe
-                break;
+				EditCategoryInRecipe(id);
+				break;
             case "Back":
                 RecipesMenu("edit");
                 break;
@@ -189,38 +187,21 @@ public class ConsoleUI
         }
     }
 
-	private void EditTitle(string title, Guid id)
+	private void EditCategoryInRecipe(Guid id)
     {
-		var updatedTitle = AnsiConsole.Prompt(
-		new TextPrompt<string>($"[blue]Edit recipe [green]{title}[/] to:[/]")
-		.PromptStyle("red")
-		);
-		_manager.Recipes[id].EditTitle(updatedTitle);
-		AnsiConsole.Write(new Markup("[red]saved[/]"));
-		Thread.Sleep(1000);
-		AnsiConsole.Clear();
-		EditRecipe(id);
-	}
-
-	private void EditListView (string listName, Guid id)
-    {
-		string[] choices = { "Edit", "Remove", "Add",  "Back", "Exit" };
+		string[] choices = { "Add", "Remove", "Back", "Exit" };
 		var userChoice = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-			.Title($"[blue]What would you like to do with recipe's {listName}?[/]")
+			.Title("[blue]What would you like to do with recipe's categories?[/]")
 			.PageSize(5)
 			.AddChoices(choices));
 		switch (userChoice)
         {
 			case "Add":
-				//TODO: add ingredient or instruction
+				AddCategoryToRecipe(id);
 				break;
-			case "Edit":
-				//TODO: edit ingredients or instructions
-				break;
-			case "Delete":
-				//TODO: Delete ingredient or instruction
-				DeleteList(id, listName);
+			case "Remove":
+				RemoveCategory(id);
 				break;
 			case "Back":
 				EditRecipe(id);
@@ -231,27 +212,293 @@ public class ConsoleUI
         }
 	}
 
-	private void DeleteList (Guid id, string listName)
+	private void AddCategoryToRecipe(Guid id)
+    {
+		ArgumentNullException.ThrowIfNull(_manager.Categories);
+		List<string> categoriesAvailable = new();
+		categoriesAvailable = _manager.Categories.Except(_manager.Recipes[id].Categories).ToList();
+		if (categoriesAvailable.Count == 0)
+        {
+			AnsiConsole.Write("\n");
+			AnsiConsole.Write(new Markup("[blue]This recipe already has all the available categories [red]Add more categories first[/][/]"));
+			Thread.Sleep(_sleepTime);
+			AnsiConsole.Clear();
+			ConsoleTitle();
+			WelcomeMessage();
+			EditCategoryInRecipe(id);
+		}
+        else
+        {
+            List<string> categories = AnsiConsole.Prompt(
+            new MultiSelectionPrompt<string>()
+            .Title("[blue]Which category to you which to add to the recipe?[/]")
+            .PageSize(5)
+            .NotRequired()
+            .InstructionsText(
+                "[grey](Press [blue]<space>[/] to toggle a category, " +
+                "[green]<enter>[/] to accept)[/]")
+            .AddChoices(categoriesAvailable)
+            );
+            if (categories.Count == 0)
+            {
+
+                AnsiConsole.Write(new Markup("[red]No category selected[/]"));
+                Thread.Sleep(_sleepTime);
+                AnsiConsole.Clear();
+                ConsoleTitle();
+                WelcomeMessage();
+                EditCategoryInRecipe(id);
+            }
+            else
+            {
+                for (int i = 0; i < categories.Count; i++)
+                {
+                    _manager.Recipes[id].AddCategory(categories[i]);
+
+                }
+                AnsiConsole.Clear();
+                ConsoleTitle();
+                WelcomeMessage();
+                AnsiConsole.Write("\n");
+                AnsiConsole.Write(new Markup("[red]Saved[/]"));
+                Thread.Sleep(_sleepTime);
+                AnsiConsole.Clear();
+                ConsoleTitle();
+                WelcomeMessage();
+                EditCategoryInRecipe(id);
+            }
+
+        }
+    }
+
+	private void RemoveCategory(Guid id)
+    {
+		if (_manager.Recipes[id].Categories.Count == 1)
+		{
+			AnsiConsole.Write(new Markup("[blue]This recipe can't remove categories since it has only one category [red]Please add another category first[/][/]"));
+			Thread.Sleep(_sleepTime);
+			AnsiConsole.Clear();
+			ConsoleTitle();
+			WelcomeMessage();
+			EditCategoryInRecipe(id);
+		}
+		else
+		{
+			List<string> userChoice = AnsiConsole.Prompt(
+			new MultiSelectionPrompt<string>()
+			.Title($"[blue]Which category would you like to remove?[/]")
+			.PageSize(5)
+			.NotRequired()
+			.InstructionsText(
+					"[grey](Press [blue]<space>[/] to toggle a category, " +
+					"[green]<enter>[/] to accept)[/]")
+			.AddChoices(_manager.Recipes[id].Categories));
+
+			if (userChoice.Count == 0)
+            {
+				AnsiConsole.Write(new Markup("[red]No category selected to be removed[/]"));
+				Thread.Sleep(_sleepTime);
+				AnsiConsole.Clear();
+				ConsoleTitle();
+				WelcomeMessage();
+				EditCategoryInRecipe(id);
+			}
+			else if (userChoice.Count == _manager.Recipes[id].Categories.Count)
+			{
+				AnsiConsole.Write(new Markup("[blue]A recipe must have atleast one category [red]Please add more categories first[/][/]"));
+				Thread.Sleep(_sleepTime);
+				AnsiConsole.Clear();
+				ConsoleTitle();
+				WelcomeMessage();
+				EditCategoryInRecipe(id);
+			}
+			else
+			{
+				AnsiConsole.Write(new Markup("[red]Categories selected are removed[/]"));
+				for (int i = 0; i < userChoice.Count; i++)
+                {
+					_manager.Recipes[id].DeleteCategory(userChoice[i]);
+				}
+				Thread.Sleep(_sleepTime);
+				AnsiConsole.Clear();
+				ConsoleTitle();
+				WelcomeMessage();
+				EditCategoryInRecipe(id);
+			}
+		}
+	}
+
+	private void EditTitle(string title, Guid id)
+    {
+		var updatedTitle = AnsiConsole.Prompt(
+		new TextPrompt<string>($"[blue]Edit recipe [green]{title}[/] to:[/]")
+		.PromptStyle("red")
+		);
+		_manager.Recipes[id].EditTitle(updatedTitle);
+		AnsiConsole.Write(new Markup("[red]saved[/]"));
+		Thread.Sleep(_sleepTime);
+		AnsiConsole.Clear();
+		EditRecipe(id);
+	}
+
+	private void EditListView (string listName, Guid id)
+    {
+		string[] choices = { "Add", "Edit", "Delete", "Back", "Exit" };
+		var userChoice = AnsiConsole.Prompt(
+			new SelectionPrompt<string>()
+			.Title($"[blue]What would you like to do with recipe's {listName}?[/]")
+			.PageSize(5)
+			.AddChoices(choices));
+		switch (userChoice)
+        {
+			case "Add":
+				AddToList(listName, id);
+				break;
+			case "Edit":
+				EditList(listName, id);
+				break;
+			case "Delete":
+				DeleteList(listName, id);
+				break;
+			case "Back":
+				EditRecipe(id);
+				break;
+			default:
+				ExitMessage();
+				break;
+        }
+	}
+
+	private void AddToList (string listName, Guid id)
+    {
+		var itemToAdd = AnsiConsole.Prompt(
+				new TextPrompt<string>($"[blue]The new {listName.Remove(listName.Length-1)} is:[/]")
+				.PromptStyle("red")
+				);
+		var index = AnsiConsole.Prompt(
+			new TextPrompt<string>("[blue]Which position do you want to place it:[/]")
+			.PromptStyle("red")
+			);
+		if (listName == "ingredients")
+		{
+			_manager.Recipes[id].AddIngredient(itemToAdd, Int16.Parse(index));
+		}
+		else
+		{
+			_manager.Recipes[id].AddInstruction(itemToAdd, Int16.Parse(index));
+		}
+		AnsiConsole.Clear();
+		ConsoleTitle();
+		WelcomeMessage();
+		AnsiConsole.Write("\n");
+		AnsiConsole.Write(new Markup("[red]Saved[/]"));
+		Thread.Sleep(_sleepTime);
+		AnsiConsole.Clear();
+		ConsoleTitle();
+		WelcomeMessage();
+		EditListView(listName, id);
+
+	}
+
+	private void EditList (string listName, Guid id)
     {
 		var recipe = _manager.Recipes[id];
-		string[] choices = {"Back", "Exit" };
-		string [] deleteItems;
-		if (listName == "Ingredients")
+		List<string> editItems = new();
+		string[] choices = { "Back", "Exit"};
+		if (listName == "ingredients")
+		{
+			editItems = recipe.Ingredients.Concat(choices).ToList();
+		}
+		else
+		{
+			editItems = recipe.Instructions.Concat(choices).ToList();
+		}
+		var userChoice = AnsiConsole.Prompt(
+		new SelectionPrompt<string>()
+		.Title($"[blue]Which {listName} would you like to edit?[/]")
+		.PageSize(5)
+		.AddChoices(editItems));
+		switch (userChoice)
         {
-			deleteItems = recipe.Ingredients.Concat(choices).ToArray();
+			case "Back":
+				EditListView(listName, id);
+				break;
+			case "Exit":
+				ExitMessage();
+				break;
+			default:
+				var updated = AnsiConsole.Prompt(
+				new TextPrompt<string>($"[blue]Edit category [green]{userChoice}[/] to:[/]")
+				.PromptStyle("red")
+				);
+				AnsiConsole.Clear();
+				ConsoleTitle();
+				WelcomeMessage();
+				AnsiConsole.Write("\n");
+				AnsiConsole.Write(new Markup("[red]Saved[/]"));
+				if (listName == "ingredients")
+				{
+					_manager.Recipes[id].EditIngredients(userChoice, updated);
+				}
+				else
+				{
+					_manager.Recipes[id].EditInstruction(userChoice, updated);
+				}
+				Thread.Sleep(_sleepTime);
+				AnsiConsole.Clear();
+				ConsoleTitle();
+				WelcomeMessage();
+				EditListView(listName, id);
+				break;
+        }
+	}
+
+	private void DeleteList (string listName, Guid id)
+    {
+		var recipe = _manager.Recipes[id];
+		List<string> deleteItems = new();
+		if (listName == "ingredients")
+        {
+			deleteItems = recipe.Ingredients.ToList();
 		}
 		else
         {
-			deleteItems = recipe.Instructions.Concat(choices).ToArray();
+			deleteItems = recipe.Instructions.ToList();
 		}
-
-		var userChoice = AnsiConsole.Prompt(
-		new SelectionPrompt<string>()
+		List<string> userChoice = AnsiConsole.Prompt(
+		new MultiSelectionPrompt<string>()
 		.Title($"[blue]Which {listName} would you like to delete?[/]")
 		.PageSize(5)
+		.NotRequired()
+		.InstructionsText(
+				$"[grey](Press [blue]<space>[/] to toggle a {listName}, " +
+				"[green]<enter>[/] to accept)[/]")
 		.AddChoices(deleteItems));
-
-		//TODO: delete item 
+		if (userChoice.Count == 0)
+        {
+			AnsiConsole.Write(new Markup("[red]No items selected[/]"));
+        }
+		else
+        {
+			for (int i = 0; i < userChoice.Count; i++)
+            {
+				if (listName == "ingredients")
+                {
+					_manager.Recipes[id].DeleteIngredient(userChoice[i]);
+				}
+				else
+                {
+					_manager.Recipes[id].DeleteInstructions(userChoice[i]);
+				}
+            }
+			AnsiConsole.Write(new Markup("[red]Items deleted[/]"));
+		}
+		Thread.Sleep(_sleepTime);
+		AnsiConsole.Clear();
+		ConsoleTitle();
+		WelcomeMessage();
+		AnsiConsole.Write("\n");
+		EditListView(listName, id);
 	}
 
 	private void DeleteRecipe(Guid id, string recipeTitle)
@@ -259,7 +506,7 @@ public class ConsoleUI
 		_manager.DeleteRecipe(id);
 		var deleteText = new Markup($"[red]{recipeTitle}[/][blue] is deleted[/]");
 		AnsiConsole.Write(deleteText);
-		Thread.Sleep(1000);
+		Thread.Sleep(_sleepTime);
 		AnsiConsole.Clear();
 		ReDraw(true);
 	}
@@ -369,7 +616,7 @@ public class ConsoleUI
 			List<string> categories = AnsiConsole.Prompt(
 			new MultiSelectionPrompt<string>()
 			.Title("[blue]What are the [green]categories[/] of the recipe?[/]")
-			.PageSize(10)
+			.PageSize(5)
 			.InstructionsText(
 				"[grey](Press [blue]<space>[/] to toggle a category, " +
 				"[green]<enter>[/] to accept)[/]")
@@ -381,7 +628,7 @@ public class ConsoleUI
 			WelcomeMessage();
 			AnsiConsole.Write("\n");
 			AnsiConsole.Write(new Markup("[red]Saved[/]"));
-			Thread.Sleep(1000);
+			Thread.Sleep(_sleepTime);
 			AnsiConsole.Clear();
 			ReDraw(true);
 		}
@@ -435,7 +682,7 @@ public class ConsoleUI
         {
 			AnsiConsole.Write(new Markup("[red]item is already available[/]"));
 		}
-		Thread.Sleep(1000);
+		Thread.Sleep(_sleepTime);
 		AnsiConsole.Clear();
 		ReDraw(false);
 	}
@@ -508,7 +755,7 @@ public class ConsoleUI
 		var deleteText = new Markup($"[red]{category}[/][blue] is deleted[/]");
 		AnsiConsole.Write(deleteText);
 		_manager.DeleteCategory(category);
-		Thread.Sleep(1000);
+		Thread.Sleep(_sleepTime);
 		AnsiConsole.Clear();
 		ReDraw(false);
 	}
@@ -520,7 +767,7 @@ public class ConsoleUI
 		);
 		_manager.EditCategory(category, updatedCategory);
 		AnsiConsole.Write(new Markup("[red]saved[/]"));
-		Thread.Sleep(1000);
+		Thread.Sleep(_sleepTime);
 		AnsiConsole.Clear();
 		ReDraw(false);
 	}
