@@ -1,67 +1,67 @@
 ﻿public class Recipe
 {
-	public string Title { get; set; }
-	public List<string> Ingredients { get; set; }
-	public List<string> Instructions { get; set; }
-	public List<string> Categories { get; set; }
-	public Recipe(string title, List<string> ingredients, List<string> instructions, List<string> categories)
-	{
-		Title = title;
-		Ingredients = new(ingredients);
-		Instructions = new(instructions);
-		Categories = new(categories);
-	}
-
-	public void EditTitle(string newTitle)
+    public string Title { get; set; }
+    public List<string> Ingredients { get; set; }
+    public List<string> Instructions { get; set; }
+    public List<string> Categories { get; set; }
+    public Recipe(string title, List<string> ingredients, List<string> instructions, List<string> categories)
     {
-		Title = newTitle;
+        Title = title;
+        Ingredients = new(ingredients);
+        Instructions = new(instructions);
+        Categories = new(categories);
     }
 
-	public void AddCategory(string category)
+    public void EditTitle(string newTitle)
     {
-		Categories.Add(category);
+        Title = newTitle;
     }
 
-	public void AddInstruction (string instruction, int index)
+    public void AddCategory(string category)
     {
-		Instructions.Insert(index - 1, instruction);
+        Categories.Add(category);
     }
 
-	public void AddIngredient(string ingredient, int index)
-	{
-		Ingredients.Insert(index - 1, ingredient);
-	}
-
-	public void EditInstruction (string oldInstruction, string newInstruction)
+    public void AddInstruction(string instruction, int index)
     {
-		int index = Instructions.IndexOf(oldInstruction);
-		Instructions[index] = newInstruction;
+        Instructions.Insert(index - 1, instruction);
     }
 
-	public void EditIngredients(string oldIngredients, string newIngredients)
-	{
-		int index = Ingredients.IndexOf(oldIngredients);
-		Ingredients[index] = newIngredients;
-	}
-
-	public void DeleteIngredient(string itemToDelete)
+    public void AddIngredient(string ingredient, int index)
     {
-		Ingredients.Remove(itemToDelete);
+        Ingredients.Insert(index - 1, ingredient);
     }
 
-	public void DeleteInstructions(string itemToDelete)
+    public void EditInstruction(string oldInstruction, string newInstruction)
     {
-		Instructions.Remove(itemToDelete);
+        int index = Instructions.IndexOf(oldInstruction);
+        Instructions[index] = newInstruction;
     }
 
-	public void DeleteCategory (string itemToDelete)
+    public void EditIngredients(string oldIngredients, string newIngredients)
     {
-		Categories.Remove(itemToDelete);
+        int index = Ingredients.IndexOf(oldIngredients);
+        Ingredients[index] = newIngredients;
     }
 
-	public void EditCategory (string oldCategory, string newCategory)
+    public void DeleteIngredient(string itemToDelete)
     {
-		int index = Categories.IndexOf(oldCategory);
-		Categories[index] = newCategory;
-	}
+        Ingredients.Remove(itemToDelete);
+    }
+
+    public void DeleteInstructions(string itemToDelete)
+    {
+        Instructions.Remove(itemToDelete);
+    }
+
+    public void DeleteCategory(string itemToDelete)
+    {
+        Categories.Remove(itemToDelete);
+    }
+
+    public void EditCategory(string oldCategory, string newCategory)
+    {
+        int index = Categories.IndexOf(oldCategory);
+        Categories[index] = newCategory;
+    }
 }
