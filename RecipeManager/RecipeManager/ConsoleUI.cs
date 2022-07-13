@@ -532,10 +532,10 @@ public class ConsoleUI
     private void ListRecipe()
     {
         var table = new Table();
-        table.AddColumn("Title");
-        table.AddColumn("Ingredients");
-        table.AddColumn("Instructions");
-        table.AddColumn("Categories");
+        table.AddColumn("[red]Title[/]");
+        table.AddColumn("[red]Ingredients[/]");
+        table.AddColumn("[red]Instructions[/]");
+        table.AddColumn("[red]Categories[/]");
         foreach (KeyValuePair<Guid, Recipe> recipe in _manager.Recipes)
         {
             var rowData = recipe.Value;
