@@ -53,11 +53,10 @@ public class ConsoleViews
         switch (userChoice)
         {
             case "Recipes":
-                //TODO: view recipes menu
                 RecipesViews.RecipeOptions();
                 break;
             case "Categories":
-                //TODO: view categories menu
+                CategoriesViews.CategoriesOptions();
                 break;
             default:
                 ExitMessage();
