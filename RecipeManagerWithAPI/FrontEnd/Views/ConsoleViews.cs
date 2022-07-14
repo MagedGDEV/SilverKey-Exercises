@@ -41,7 +41,7 @@ public class ConsoleViews
     {
         if (s_entryPoint)
         {
-            AnsiConsole.Write("\n");
+            NewLine();
             s_entryPoint = false;
         }
         string[] choices = { "Recipes", "Categories", "Exit" };

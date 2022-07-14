@@ -11,7 +11,7 @@ public class RecipesViews
     {
         if (ConsoleViews.s_entryPoint)
         {
-            AnsiConsole.Write("\n");
+            ConsoleViews.NewLine();
             ConsoleViews.s_entryPoint = false;
         }
         string[] choices = { "List recipes", "Add recipe", "Edit recipe", "Delete recipe", "Back", "Exit" };

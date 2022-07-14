@@ -10,7 +10,7 @@ public class CategoriesViews
     {
         if (ConsoleViews.s_entryPoint)
         {
-            AnsiConsole.Write("\n");
+            ConsoleViews.NewLine();
             ConsoleViews.s_entryPoint = false;
         }
         string[] choices = { "Add category", "Edit category", "Delete category", "Back", "Exit" };
@@ -37,6 +37,12 @@ public class CategoriesViews
                 ConsoleViews.ExitMessage();
                 break;
         }
+    }
+
+    private void CategoriesAsOptions()
+    {
+        //TODO: Get the categories list from the "ConsoleViews" class
+        // and display them with Back and Exit button
     }
 }
 
