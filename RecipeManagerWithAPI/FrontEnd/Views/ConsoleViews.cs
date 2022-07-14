@@ -3,14 +3,14 @@ using Spectre.Console;
 
 public class ConsoleViews
 {
-    public bool EntryPoint;
+    static public bool s_entryPoint;
     public ConsoleViews()
     {
-        EntryPoint = true;
+        s_entryPoint = true;
         IntialPage();
     }
 
-    public void NewLine()
+    static public void NewLine()
     {
         AnsiConsole.Write("\n");
     }
@@ -30,19 +30,19 @@ public class ConsoleViews
         AnsiConsole.Write(roundedPanel);
     }
 
-    public void ExitMessage()
+    static public void ExitMessage()
     {
         //TODO: serialize data 
         var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you :smiling_face_with_smiling_eyes:[/]").Centered();
         AnsiConsole.Write(goodByeMessage);
     }
 
-    private void IntialChoices()
+    static public void IntialChoices()
     {
-        if (EntryPoint)
+        if (s_entryPoint)
         {
             AnsiConsole.Write("\n");
-            EntryPoint = false;
+            s_entryPoint = false;
         }
         string[] choices = { "Recipes", "Categories", "Exit" };
         var userChoice = AnsiConsole.Prompt(
@@ -54,6 +54,7 @@ public class ConsoleViews
         {
             case "Recipes":
                 //TODO: view recipes menu
+                RecipesViews.RecipeOptions();
                 break;
             case "Categories":
                 //TODO: view categories menu
