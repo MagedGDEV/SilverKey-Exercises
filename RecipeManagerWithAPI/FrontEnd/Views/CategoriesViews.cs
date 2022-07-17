@@ -22,13 +22,13 @@ public class CategoriesViews
         switch (userChoice)
         {
             case "Add category":
-                //TODO: Add category view 
+                AddCategory();
                 break;
             case "Edit category":
-                //TODO: Edit category view 
+                CategoriesAsOptions("edit");
                 break;
             case "Delete category":
-                //TODO: Delete category view 
+                CategoriesAsOptions("delete");
                 break;
             case "Back":
                 ConsoleViews.IntialChoices();
@@ -39,10 +39,44 @@ public class CategoriesViews
         }
     }
 
-    private void CategoriesAsOptions()
+    static private void CategoriesAsOptions(string action)
     {
         //TODO: Get the categories list from the "ConsoleViews" class
         // and display them with Back and Exit button
+        // The variable action will be used to display whether this is an delete or edit
+        // and which function is going to be called when a category is chosen
+    }
+
+    static private void AddCategory()
+    {
+        var category = AnsiConsole.Prompt(
+        new TextPrompt<string>("[blue]Enter the category name:[/]")
+        .PromptStyle("red")
+        );
+        //TODO: Http post request to add category to JSON file & add it to the existing categories list 
+        // The response should be whether item is already available or successfully saved
+        // Then according to the response should a certain view to notify user
+        // Return to CategoriesOptions view
+    }
+
+    static private void DeleteCategory(string category)
+    {
+        var deleteText = new Markup($"[red]{category}[/][blue] is deleted[/]");
+        AnsiConsole.Write(deleteText);
+        //TODO: Http delete request to delete from the JSON file and delete it from the existing categories list
+        // and from each recipe that has that category
+        // Then go back the CategoriesOptions
+    }
+
+    static private void EditCategory(string category)
+    {
+        var updatedCategory = AnsiConsole.Prompt(
+        new TextPrompt<string>($"[blue]Edit category [green]{category}[/] to:[/]")
+        .PromptStyle("red")
+        );
+        //TODO: Http put request to update the name of category in json file and the existing categories list
+        // and from each recipe that has that category
+        // if successful view saved and return to CategoriesOptions
     }
 }
 

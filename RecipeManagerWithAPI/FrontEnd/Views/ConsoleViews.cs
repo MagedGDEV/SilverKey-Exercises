@@ -6,6 +6,7 @@ public class ConsoleViews
     static public bool s_entryPoint;
     public ConsoleViews()
     {
+        //TODO: Http get request to read all the recipes & categories 
         s_entryPoint = true;
         IntialPage();
     }
