@@ -35,10 +35,24 @@ public class RecipesServices
         return Results.Json(recipe, statusCode: 200);
     }
 
+    private IResult DeleteRecipe(Guid recipeId)
+    {
+        _recipes.Remove(recipeId);
+        WriteRecipes();
+        return Results.Json(recipeId, statusCode: 200);
+    }
+
+    private IResult GetRecipe(Guid recipeId)
+    {
+        return Results.Json(_recipes[recipeId], statusCode: 200);
+    }
+
     public void Routing(IEndpointRouteBuilder router)
     {
         router.MapGet("/recipes", ReadRecipes);
         router.MapPost("/recipes", AddRecipe);
+        router.MapGet("/recipes/{recipeId}", GetRecipe);
+        router.MapDelete("/recipes/{recipeId}", DeleteRecipe);
     }
 }
 
