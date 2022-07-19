@@ -16,8 +16,10 @@
     <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
     <None Remove="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <None Remove="Services\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>
