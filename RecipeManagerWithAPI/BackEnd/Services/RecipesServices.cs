@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 public class RecipesServices
 {
-    private Dictionary<Guid, RecipeModel> _recipes { get; set; }
+    static public Dictionary<Guid, RecipeModel> Recipes = new();
     private const string RecipesFileName = "Recipes.json";
     public RecipesServices()
     {
-        _recipes = new();
     }
 
     private IResult ReadRecipes()
@@ -16,13 +15,13 @@ public class RecipesServices
         var jsonString = File.ReadAllText(RecipesFileName);
         var recipes = JsonSerializer.Deserialize<Dictionary<Guid, RecipeModel>>(jsonString);
         ArgumentNullException.ThrowIfNull(recipes);
-        _recipes = recipes;
-        return Results.Json(_recipes, statusCode: 200);
+        Recipes = recipes;
+        return Results.Json(Recipes, statusCode: 200);
     }
 
-    private void WriteRecipes()
+    static public void WriteRecipes()
     {
-        var jsonString = JsonSerializer.Serialize(_recipes);
+        var jsonString = JsonSerializer.Serialize(Recipes);
         File.WriteAllText(RecipesFileName, jsonString);
     }
 
@@ -30,82 +29,82 @@ public class RecipesServices
     {
         Guid id = Guid.NewGuid();
         var newRecipe = new RecipeModel(recipe.Title, recipe.Ingredients, recipe.Instructions, recipe.Categories);
-        _recipes.Add(id, recipe);
+        Recipes.Add(id, recipe);
         WriteRecipes();
         return Results.Json(recipe, statusCode: 200);
     }
 
     private IResult DeleteRecipe(Guid recipeId)
     {
-        _recipes.Remove(recipeId);
+        Recipes.Remove(recipeId);
         WriteRecipes();
         return Results.Json(recipeId, statusCode: 200);
     }
 
     private IResult GetRecipe(Guid recipeId)
     {
-        return Results.Json(_recipes[recipeId], statusCode: 200);
+        return Results.Json(Recipes[recipeId], statusCode: 200);
     }
 
     private IResult EditRecipeTitle(Guid recipeId, [FromBody] string newTitle)
     {
-        _recipes[recipeId].EditTitle(newTitle);
+        Recipes[recipeId].EditTitle(newTitle);
         WriteRecipes();
         return Results.Json(newTitle, statusCode: 200);
     }
 
     private IResult DeleteRecipeIngredients(Guid recipeId, [FromBody] List<string> ingredientsToDelete)
     {
-        _recipes[recipeId].DeleteIngredients(ingredientsToDelete);
+        Recipes[recipeId].DeleteIngredients(ingredientsToDelete);
         WriteRecipes();
         return Results.Json(ingredientsToDelete, statusCode: 200);
     }
 
     private IResult AddRecipeIngredients(Guid recipeId, [FromBody] AddListModel ingredientToAdd)
     {
-        _recipes[recipeId].AddIngredient(ingredientToAdd.ItemToAdd, ingredientToAdd.Position);
+        Recipes[recipeId].AddIngredient(ingredientToAdd.ItemToAdd, ingredientToAdd.Position);
         WriteRecipes();
         return Results.Json(ingredientToAdd, statusCode: 200);
     }
 
     private IResult EditRecipeIngredients(Guid recipeId, string ingredient, [FromBody] string updatedIngredient)
     {
-        _recipes[recipeId].EditIngredient(ingredient, updatedIngredient);
+        Recipes[recipeId].EditIngredient(ingredient, updatedIngredient);
         WriteRecipes();
         return Results.Json(updatedIngredient, statusCode: 200);
     }
 
     private IResult DeleteRecipeInstructions(Guid recipeId, [FromBody] List<string> instructionsToDelete)
     {
-        _recipes[recipeId].DeleteInstructions(instructionsToDelete);
+        Recipes[recipeId].DeleteInstructions(instructionsToDelete);
         WriteRecipes();
         return Results.Json(instructionsToDelete, statusCode: 200);
     }
 
     private IResult AddRecipeInstructions(Guid recipeId, [FromBody] AddListModel instructionToAdd)
     {
-        _recipes[recipeId].AddInstruction(instructionToAdd.ItemToAdd, instructionToAdd.Position);
+        Recipes[recipeId].AddInstruction(instructionToAdd.ItemToAdd, instructionToAdd.Position);
         WriteRecipes();
         return Results.Json(instructionToAdd, statusCode: 200);
     }
 
     private IResult EditRecipeInstructions(Guid recipeId, string instruction, [FromBody] string updatedInstruction)
     {
-        _recipes[recipeId].EditInstruction(instruction, updatedInstruction);
+        Recipes[recipeId].EditInstruction(instruction, updatedInstruction);
         WriteRecipes();
         return Results.Json(updatedInstruction, statusCode: 200);
     }
 
     private IResult DeleteRecipeCategories(Guid recipeId, [FromBody] List<string> categoriesToDelete)
     {
-        _recipes[recipeId].DeleteCategories(categoriesToDelete);
+        Recipes[recipeId].DeleteCategories(categoriesToDelete);
         WriteRecipes();
         return Results.Json(categoriesToDelete, statusCode: 200);
     }
 
     private IResult AddRecipeCategories(Guid recipeId, [FromBody] List<string> categoriesToAdd)
     {
-        _recipes[recipeId].AddCategories(categoriesToAdd);
+        Recipes[recipeId].AddCategories(categoriesToAdd);
         WriteRecipes();
         return Results.Json(categoriesToAdd, statusCode: 200);
     }

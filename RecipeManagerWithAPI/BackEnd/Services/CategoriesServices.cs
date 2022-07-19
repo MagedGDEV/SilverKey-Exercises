@@ -44,8 +44,15 @@ public class CategoriesServices
     private IResult DeleteCategory(string titleToDelete)
     {
         _categories.Remove(titleToDelete);
-        //TODO: Delete category from recipes
+        foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipesServices.Recipes)
+        {
+            if (recipe.Value.Categories.Contains(titleToDelete))
+            {
+                RecipesServices.Recipes[recipe.Key].DeleteCategory(titleToDelete);
+            }
+        }
         WriteCategories();
+        RecipesServices.WriteRecipes();
         return Results.Json(titleToDelete, statusCode: 200);
     }
 
