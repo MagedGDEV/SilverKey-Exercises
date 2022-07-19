@@ -37,7 +37,15 @@ public class CategoriesServices
     {
         int index = _categories.IndexOf(oldTitle);
         _categories[index] = newTitle;
+        foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipesServices.Recipes)
+        {
+            if (recipe.Value.Categories.Contains(oldTitle))
+            {
+                RecipesServices.Recipes[recipe.Key].EditCategory(oldTitle, newTitle);
+            }
+        }
         WriteCategories();
+        RecipesServices.WriteRecipes();
         return Results.Json(index, statusCode: 200);
     }
 
