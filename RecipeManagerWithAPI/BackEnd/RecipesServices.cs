@@ -1,12 +1,27 @@
 ﻿using System;
+using System.Text.Json;
 
 public class RecipesServices
 {
-    public Dictionary<Guid, RecipeModel> Recipes { get; set; }
+    private Dictionary<Guid, RecipeModel> _recipes { get; set; }
     private const string RecipesFileName = "Recipes.json";
     public RecipesServices()
     {
-        Recipes = new();
+        _recipes = new();
+    }
+
+    private IResult ReadCategories()
+    {
+        var jsonString = File.ReadAllText(RecipesFileName);
+        var recipes = JsonSerializer.Deserialize<Dictionary<Guid, RecipeModel>>(jsonString);
+        ArgumentNullException.ThrowIfNull(recipes);
+        _recipes = recipes;
+        return Results.Json(_recipes, statusCode: 200);
+    }
+
+    public void Routing(IEndpointRouteBuilder router)
+    {
+        router.MapGet("/recipes", ReadCategories);
     }
 }
 
