@@ -45,6 +45,7 @@ public class CategoriesServices
     private IResult DeleteCategory(string titleToDelete)
     {
         _categories.Remove(titleToDelete);
+        //TODO: Delete category from recipes
         WriteCategories();
         return Results.Json(titleToDelete, statusCode: 200);
     }

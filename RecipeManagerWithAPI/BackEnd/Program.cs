@@ -1,4 +1,5 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
+var recipes = new RecipesServices();
 var categories = new CategoriesServices();
 var app = builder.Build();
 
