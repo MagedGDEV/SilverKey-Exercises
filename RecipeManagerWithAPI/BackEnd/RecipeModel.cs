@@ -77,5 +77,10 @@
         int index = Categories.IndexOf(category);
         Categories[index] = updatedCategory;
     }
+
+    public void DeleteCategory(string itemToDelete)
+    {
+        Categories.Remove(itemToDelete);
+    }
 }
 

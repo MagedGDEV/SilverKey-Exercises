@@ -103,6 +103,13 @@ public class RecipesServices
         return Results.Json(categoriesToDelete, statusCode: 200);
     }
 
+    private IResult AddRecipeCategories(Guid recipeId, [FromBody] List<string> categoriesToAdd)
+    {
+        _recipes[recipeId].AddCategories(categoriesToAdd);
+        WriteRecipes();
+        return Results.Json(categoriesToAdd, statusCode: 200);
+    }
+
     public void Routing(IEndpointRouteBuilder router)
     {
         router.MapGet("/recipes", ReadRecipes);
@@ -120,6 +127,7 @@ public class RecipesServices
         router.MapPut("/recipe/{recipeId}/instruction/{instruction}", EditRecipeInstructions);
         //Editing recipe's categories
         router.MapDelete("/recipe/{recipeId}/categories", DeleteRecipeCategories);
+        router.MapPost("/recipe/{recipeId}/categories", AddRecipeCategories);
     }
 }
 
