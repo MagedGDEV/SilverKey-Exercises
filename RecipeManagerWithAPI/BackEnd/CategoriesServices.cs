@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
 public class CategoriesServices
@@ -20,17 +19,41 @@ public class CategoriesServices
         return Results.Json(_categories, statusCode: 200);
     }
 
-    private IResult AddCategory([FromBody]string category)
+    private void WriteCategories()
     {
-        _categories.Append(category);
         var jsonString = JsonSerializer.Serialize(_categories);
         File.WriteAllText(CategoriesFileName, jsonString);
+    }
+
+    private IResult AddCategory([FromBody]string category)
+    {
+        _categories.Add(category);
+        var jsonString = JsonSerializer.Serialize(_categories);
+        File.WriteAllText(CategoriesFileName, jsonString);
+        //TODO: If item already available send different status code 
         return Results.Json(category, statusCode: 200);
+    }
+
+    private IResult UpdateCategory(string oldTitle,[FromBody] string newTitle)
+    {
+        int index = _categories.IndexOf(oldTitle);
+        _categories[index] = newTitle;
+        WriteCategories();
+        return Results.Json(index, statusCode: 200);
+    }
+
+    private IResult DeleteCategory(string titleToDelete)
+    {
+        _categories.Remove(titleToDelete);
+        WriteCategories();
+        return Results.Json(titleToDelete, statusCode: 200);
     }
 
     public void Routing(IEndpointRouteBuilder router)
     {
         router.MapGet("/categories", ReadCategories);
         router.MapPost("/categories", AddCategory);
+        router.MapPut("/categories/{oldTitle}", UpdateCategory);
+        router.MapDelete("/categories/{titleToDelete}", DeleteCategory);
     }
 }
