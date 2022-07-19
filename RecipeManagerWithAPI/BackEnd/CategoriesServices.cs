@@ -28,8 +28,7 @@ public class CategoriesServices
     private IResult AddCategory([FromBody]string category)
     {
         _categories.Add(category);
-        var jsonString = JsonSerializer.Serialize(_categories);
-        File.WriteAllText(CategoriesFileName, jsonString);
+        WriteCategories();
         //TODO: If item already available send different status code 
         return Results.Json(category, statusCode: 200);
     }
