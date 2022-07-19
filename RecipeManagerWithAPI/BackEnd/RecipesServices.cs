@@ -10,7 +10,7 @@ public class RecipesServices
         _recipes = new();
     }
 
-    private IResult ReadCategories()
+    private IResult ReadRecipes()
     {
         var jsonString = File.ReadAllText(RecipesFileName);
         var recipes = JsonSerializer.Deserialize<Dictionary<Guid, RecipeModel>>(jsonString);
@@ -21,7 +21,7 @@ public class RecipesServices
 
     public void Routing(IEndpointRouteBuilder router)
     {
-        router.MapGet("/recipes", ReadCategories);
+        router.MapGet("/recipes", ReadRecipes);
     }
 }
 
