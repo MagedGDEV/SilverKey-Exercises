@@ -47,28 +47,28 @@ public class RecipesServices
         return Results.Json(_recipes[recipeId], statusCode: 200);
     }
 
-    private IResult EditRecipeTitle (Guid recipeId, [FromBody] string newTitle)
+    private IResult EditRecipeTitle(Guid recipeId, [FromBody] string newTitle)
     {
         _recipes[recipeId].EditTitle(newTitle);
         WriteRecipes();
         return Results.Json(newTitle, statusCode: 200);
     }
 
-    private IResult DeleteRecipeIngredients (Guid recipeId, [FromBody] List<string> ingredientsToDelete)
+    private IResult DeleteRecipeIngredients(Guid recipeId, [FromBody] List<string> ingredientsToDelete)
     {
         _recipes[recipeId].DeleteIngredients(ingredientsToDelete);
         WriteRecipes();
         return Results.Json(ingredientsToDelete, statusCode: 200);
     }
 
-    private IResult AddRecipeIngredients (Guid recipeId, [FromBody] AddListModel ingredientToAdd)
+    private IResult AddRecipeIngredients(Guid recipeId, [FromBody] AddListModel ingredientToAdd)
     {
         _recipes[recipeId].AddIngredient(ingredientToAdd.ItemToAdd, ingredientToAdd.Position);
         WriteRecipes();
         return Results.Json(ingredientToAdd, statusCode: 200);
     }
 
-    private IResult EditRecipeIngredients (Guid recipeId, string ingredient, [FromBody] string updatedIngredient)
+    private IResult EditRecipeIngredients(Guid recipeId, string ingredient, [FromBody] string updatedIngredient)
     {
         _recipes[recipeId].EditIngredient(ingredient, updatedIngredient);
         WriteRecipes();
@@ -89,6 +89,20 @@ public class RecipesServices
         return Results.Json(instructionToAdd, statusCode: 200);
     }
 
+    private IResult EditRecipeInstructions(Guid recipeId, string instruction, [FromBody] string updatedInstruction)
+    {
+        _recipes[recipeId].EditInstruction(instruction, updatedInstruction);
+        WriteRecipes();
+        return Results.Json(updatedInstruction, statusCode: 200);
+    }
+
+    private IResult DeleteRecipeCategories(Guid recipeId, [FromBody] List<string> categoriesToDelete)
+    {
+        _recipes[recipeId].DeleteCategories(categoriesToDelete);
+        WriteRecipes();
+        return Results.Json(categoriesToDelete, statusCode: 200);
+    }
+
     public void Routing(IEndpointRouteBuilder router)
     {
         router.MapGet("/recipes", ReadRecipes);
@@ -96,12 +110,16 @@ public class RecipesServices
         router.MapGet("/recipes/{recipeId}", GetRecipe);
         router.MapDelete("/recipes/{recipeId}", DeleteRecipe);
         router.MapPut("/recipe/{recipeId}/title", EditRecipeTitle);
+        // Editing recipe's ingredients
         router.MapDelete("/recipe/{recipeId}/ingredients", DeleteRecipeIngredients);
         router.MapPost("/recipe/{recipeId}/ingredients", AddRecipeIngredients);
-        router.MapPut("/recipe/{recipeId}/{ingredient}", EditRecipeIngredients);
+        router.MapPut("/recipe/{recipeId}/ingredient/{ingredient}", EditRecipeIngredients);
+        // Editing recipe's instructions
         router.MapDelete("/recipe/{recipeId}/instructions", DeleteRecipeInstructions);
         router.MapPost("/recipe/{recipeId}/instructions", AddRecipeInstructions);
-
+        router.MapPut("/recipe/{recipeId}/instruction/{instruction}", EditRecipeInstructions);
+        //Editing recipe's categories
+        router.MapDelete("/recipe/{recipeId}/categories", DeleteRecipeCategories);
     }
 }
 

@@ -52,8 +52,30 @@
 
     public void EditInstruction (string instruction, string updatedInstruction)
     {
-        int index = Ingredients.IndexOf(instruction);
-        Ingredients[index] = updatedInstruction;
+        int index = Instructions.IndexOf(instruction);
+        Instructions[index] = updatedInstruction;
+    }
+
+    public void DeleteCategories(List<string> categoriesToDelete)
+    {
+        for (int i = 0; i < categoriesToDelete.Count; i++)
+        {
+            Categories.Remove(categoriesToDelete[i]);
+        }
+    }
+
+    public void AddCategories(List<string> categoriesToAdd)
+    {
+        for (int i = 0; i < categoriesToAdd.Count; i++)
+        {
+            Categories.Add(categoriesToAdd[i]);
+        }
+    }
+
+    public void EditCategory(string category, string updatedCategory)
+    {
+        int index = Categories.IndexOf(category);
+        Categories[index] = updatedCategory;
     }
 }
 
