@@ -13,6 +13,7 @@ public class CategoriesViews
             ConsoleViews.NewLine();
             ConsoleViews.s_entryPoint = false;
         }
+        CategoriesRequests.GetListOfCategoriesAsync().Wait();
         string[] choices = { "Add category", "Edit category", "Delete category", "Back", "Exit" };
         var userChoice = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
@@ -41,13 +42,6 @@ public class CategoriesViews
 
     static private void CategoriesAsOptions(string action)
     {
-        //TODO: Get the categories list from the "ConsoleViews" class
-        // and display them with Back and Exit button
-        // The variable action will be used to display whether this is an delete or edit
-        // and which function is going to be called when a category is chosen
-
-        CategoriesRequests.GetListOfCategoriesAsync().Wait();
-        ArgumentNullException.ThrowIfNull(CategoriesRequests.Categories);
         string[] choices = { "Back", "Exit" };
         if (CategoriesRequests.Categories.Count == 0)
         {
@@ -105,19 +99,29 @@ public class CategoriesViews
         new TextPrompt<string>("[blue]Enter the category name:[/]")
         .PromptStyle("red")
         );
-        //TODO: Http post request to add category to JSON file & add it to the existing categories list 
-        // The response should be whether item is already available or successfully saved
-        // Then according to the response should a certain view to notify user
-        // Return to CategoriesOptions view
+        var added = CategoriesRequests.Categories.Contains(category);
+        if (!added)
+        {
+            AnsiConsole.Write(new Markup("[red]saved[/]"));
+            //TODO: Add category http
+        }
+        else
+        {
+            AnsiConsole.Write(new Markup("[red]item is already available[/]"));
+        }
+        Thread.Sleep(ConsoleViews.SleepTime);
+        ConsoleViews.ExitingView();
+        CategoriesOptions();
     }
 
     static private void DeleteCategory(string category)
     {
         var deleteText = new Markup($"[red]{category}[/][blue] is deleted[/]");
         AnsiConsole.Write(deleteText);
-        //TODO: Http delete request to delete from the JSON file and delete it from the existing categories list
-        // and from each recipe that has that category
-        // Then go back the CategoriesOptions
+        //TODO: DELETE CATEGORY HTTP
+        Thread.Sleep(ConsoleViews.SleepTime);
+        ConsoleViews.ExitingView();
+        CategoriesOptions();
     }
 
     static private void EditCategory(string category)
@@ -126,9 +130,11 @@ public class CategoriesViews
         new TextPrompt<string>($"[blue]Edit category [green]{category}[/] to:[/]")
         .PromptStyle("red")
         );
-        //TODO: Http put request to update the name of category in json file and the existing categories list
-        // and from each recipe that has that category
-        // if successful view saved and return to CategoriesOptions
+        AnsiConsole.Write(new Markup("[red]saved[/]"));
+        //TODO: HTTP REQUEST TO EDIT CATEGORY
+        Thread.Sleep(ConsoleViews.SleepTime);
+        ConsoleViews.ExitingView();
+        CategoriesOptions();
     }
 }
 

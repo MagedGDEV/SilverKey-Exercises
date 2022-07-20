@@ -3,10 +3,10 @@ using Spectre.Console;
 
 public class ConsoleViews
 {
+    static public int SleepTime = 2000;
     static public bool s_entryPoint;
     public ConsoleViews()
-    {
-        //TODO: Http get request to read all the recipes & categories 
+    { 
         s_entryPoint = true;
         IntialPage();
     }
@@ -33,9 +33,9 @@ public class ConsoleViews
 
     static public void ExitMessage()
     {
-        //TODO: serialize data 
         var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you :smiling_face_with_smiling_eyes:[/]").Centered();
         AnsiConsole.Write(goodByeMessage);
+        NewLine();
     }
 
     static public void ExitingView()

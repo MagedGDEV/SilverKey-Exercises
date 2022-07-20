@@ -113,7 +113,7 @@ public class ConsoleUI
             switch (userChoice)
             {
                 case "Back":
-                    CategoryChoices();
+                    RecipeChoices();
                     break;
                 default:
                     ExitMessage();
