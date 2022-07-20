@@ -16,7 +16,7 @@ public class ConsoleViews
         AnsiConsole.Write("\n");
     }
 
-    private void WelcomeMessage()
+    static private void WelcomeMessage()
     {
         NewLine();
         var welcomeText = new Markup("[bold yellow]Welcome to Recipe Manager :stuffed_flatbread:[/]").Centered();
@@ -24,7 +24,7 @@ public class ConsoleViews
         NewLine();
     }
 
-    private void ApplicationTitle()
+    static private void ApplicationTitle()
     {
         var titleText = new FigletText("Recipe Manager").Centered().Color(Color.Blue);
         var roundedPanel = new Panel(titleText).DoubleBorder();
@@ -36,6 +36,14 @@ public class ConsoleViews
         //TODO: serialize data 
         var goodByeMessage = new Markup("[red]GoodBye, it was nice helping you :smiling_face_with_smiling_eyes:[/]").Centered();
         AnsiConsole.Write(goodByeMessage);
+    }
+
+    static public void ExitingView()
+    {
+        AnsiConsole.Clear();
+        ApplicationTitle();
+        WelcomeMessage();
+        NewLine();
     }
 
     static public void IntialChoices()

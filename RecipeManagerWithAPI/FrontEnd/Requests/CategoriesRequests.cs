@@ -4,12 +4,11 @@ using System.Text.Json;
 static public class CategoriesRequests
 {
     static private string s_url = "https://localhost:5001/categories";
-    static private HttpClient s_client;
+    static private HttpClient s_client = new();
     static public List<string> Categories = new();
 
     static CategoriesRequests()
     {
-        s_client = new();
     }
 
     static public async Task GetListOfCategoriesAsync()

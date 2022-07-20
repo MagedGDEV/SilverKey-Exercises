@@ -6,6 +6,11 @@ public class RecipesServices
 {
     static public Dictionary<Guid, RecipeModel> Recipes = new();
     private const string RecipesFileName = "Recipes.json";
+    private JsonSerializerOptions options = new JsonSerializerOptions
+    {
+        DictionaryKeyPolicy = null
+    };
+
     public RecipesServices()
     {
     }
@@ -16,7 +21,7 @@ public class RecipesServices
         var recipes = JsonSerializer.Deserialize<Dictionary<Guid, RecipeModel>>(jsonString);
         ArgumentNullException.ThrowIfNull(recipes);
         Recipes = recipes;
-        return Results.Json(Recipes, statusCode: 200);
+        return Results.Json(Recipes, options: options, statusCode: 200);
     }
 
     static public void WriteRecipes()
