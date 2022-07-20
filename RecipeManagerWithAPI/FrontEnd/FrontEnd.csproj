@@ -10,10 +10,12 @@
   <ItemGroup>
     <None Remove="Models\" />
     <None Remove="Views\" />
+    <None Remove="Requests\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Views\" />
+    <Folder Include="Requests\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.44.0" />

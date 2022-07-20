@@ -45,6 +45,58 @@ public class CategoriesViews
         // and display them with Back and Exit button
         // The variable action will be used to display whether this is an delete or edit
         // and which function is going to be called when a category is chosen
+
+        CategoriesRequests.GetListOfCategoriesAsync().Wait();
+        ArgumentNullException.ThrowIfNull(CategoriesRequests.Categories);
+        string[] choices = { "Back", "Exit" };
+        if (CategoriesRequests.Categories.Count == 0)
+        {
+            var userChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title($"[blue]No categories to {action}[red] please add categories[/][/]")
+            .PageSize(5)
+            .AddChoices(choices));
+            switch (userChoice)
+            {
+                case "Back":
+                    ConsoleViews.IntialChoices();
+                    break;
+                default:
+                    ConsoleViews.ExitMessage();
+                    break;
+            }
+
+        }
+        else
+        {
+            var display = CategoriesRequests.Categories.ToArray();
+            display = display.Concat(choices).ToArray();
+
+            var userChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title($"[blue]Which category do you want to {action}?[/]")
+            .PageSize(5)
+            .AddChoices(display));
+            switch (userChoice)
+            {
+                case "Back":
+                    ConsoleViews.IntialChoices();
+                    break;
+                case "Exit":
+                    ConsoleViews.ExitMessage();
+                    break;
+                default:
+                    if (action == "edit")
+                    {
+                        EditCategory(userChoice);
+                    }
+                    else
+                    {
+                        DeleteCategory(userChoice);
+                    }
+                    break;
+            }
+        }
     }
 
     static private void AddCategory()

@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+dummy
 
 # Object files
 *.o
