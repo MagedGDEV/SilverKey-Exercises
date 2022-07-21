@@ -131,7 +131,7 @@ public class CategoriesViews
         .PromptStyle("red")
         );
         AnsiConsole.Write(new Markup("[red]saved[/]"));
-        //TODO: HTTP REQUEST TO EDIT CATEGORY
+        CategoriesRequests.UpdateCategoryAsync(category, updatedCategory).Wait();
         Thread.Sleep(ConsoleViews.SleepTime);
         ConsoleViews.ExitingView();
         CategoriesOptions();

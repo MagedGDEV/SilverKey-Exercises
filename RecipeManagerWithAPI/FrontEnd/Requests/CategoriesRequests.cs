@@ -36,6 +36,15 @@ static public class CategoriesRequests
         _ = await response.Content.ReadAsStringAsync();
         GetListOfCategoriesAsync().Wait();
     }
+
+    static public async Task UpdateCategoryAsync (string currentCategory, string updatedCategory)
+    {
+        var json = JsonSerializer.Serialize(updatedCategory);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await s_client.PutAsync(s_url + $"/{currentCategory}", data);
+        _ = await response.Content.ReadAsStringAsync();
+        GetListOfCategoriesAsync().Wait();
+    }
 }
 
 
