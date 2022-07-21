@@ -10,6 +10,7 @@ public class RecipesViews
 
     static public void RecipeOptions()
     {
+        RecipeRequests.GetDictionaryOfRecipesAsync().Wait();
         if (ConsoleViews.s_entryPoint)
         {
             ConsoleViews.NewLine();
@@ -85,7 +86,8 @@ public class RecipesViews
             ));
             ConsoleViews.ExitingView();
             AnsiConsole.Write(new Markup("[red]Saved[/]"));
-            //TODO: http request to add recipe
+            var recipe = new RecipeModel(title, ingredients, instructions, categories);
+            RecipeRequests.AddRecipeAsync(recipe).Wait();
             Thread.Sleep(ConsoleViews.SleepTime);
             ConsoleViews.ExitingView();
             RecipeOptions();
@@ -165,7 +167,6 @@ public class RecipesViews
     static private void RecipesMenu(string text)
     {
         string[] choices = { "Back", "Exit" };
-        RecipeRequests.GetDictionaryOfRecipesAsync().Wait();
         if (RecipeRequests.Recipes.Count == 0)
         {
             var userChoice = AnsiConsole.Prompt(
@@ -312,16 +313,18 @@ public class RecipesViews
             new TextPrompt<string>("[blue]Which position do you want to place it:[/]")
             .PromptStyle("red")
             );
+        ConsoleViews.ExitingView();
+        AnsiConsole.Write(new Markup("[red]Saved[/]"));
         if (listName == "ingredients")
         {
-            //TODO: HTTP add request to ingredients
+            var ingredient = new AddListModel(itemToAdd, Int16.Parse(index));
+            RecipeRequests.AddRecipeIngredientsAsync(ingredient, id).Wait();
         }
         else
         {
-            //TODO: HTTP add request to instructions
+            var instruction = new AddListModel(itemToAdd, Int16.Parse(index));
+            RecipeRequests.AddRecipeInstructionsAsync(instruction, id).Wait();
         }
-        ConsoleViews.ExitingView();
-        AnsiConsole.Write(new Markup("[red]Saved[/]"));
         Thread.Sleep(ConsoleViews.SleepTime);
         ConsoleViews.ExitingView();
         EditListView(listName, id);
@@ -482,7 +485,7 @@ public class RecipesViews
             {
                 ConsoleViews.ExitingView();
                 AnsiConsole.Write(new Markup("[red]Saved[/]"));
-                //TODO: HTTP request to add category
+                RecipeRequests.AddRecipeCategoriesAsync(categories, id).Wait();
                 Thread.Sleep(ConsoleViews.SleepTime);
                 ConsoleViews.ExitingView();
                 EditCategoryInRecipe(id);

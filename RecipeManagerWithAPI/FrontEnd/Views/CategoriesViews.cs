@@ -103,7 +103,7 @@ public class CategoriesViews
         if (!added)
         {
             AnsiConsole.Write(new Markup("[red]saved[/]"));
-            //TODO: Add category http
+            CategoriesRequests.AddCategoryAsync(category).Wait();
         }
         else
         {
