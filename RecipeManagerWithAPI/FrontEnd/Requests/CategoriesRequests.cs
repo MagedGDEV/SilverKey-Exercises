@@ -26,6 +26,15 @@ static public class CategoriesRequests
         var data = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await s_client.PostAsync(s_url, data);
         _ = await response.Content.ReadAsStringAsync();
+        GetListOfCategoriesAsync().Wait();
+    }
+
+    static public async Task DeleteCategoryAsync (string category)
+    {
+        string url = s_url + $"/{category}";
+        var response = await s_client.DeleteAsync(url);
+        _ = await response.Content.ReadAsStringAsync();
+        GetListOfCategoriesAsync().Wait();
     }
 }
 

@@ -118,7 +118,7 @@ public class CategoriesViews
     {
         var deleteText = new Markup($"[red]{category}[/][blue] is deleted[/]");
         AnsiConsole.Write(deleteText);
-        //TODO: DELETE CATEGORY HTTP
+        CategoriesRequests.DeleteCategoryAsync(category).Wait();
         Thread.Sleep(ConsoleViews.SleepTime);
         ConsoleViews.ExitingView();
         CategoriesOptions();
