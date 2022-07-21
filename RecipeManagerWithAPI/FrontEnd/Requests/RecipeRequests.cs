@@ -13,6 +13,7 @@ static public class RecipeRequests
     {
     }
 
+    //Get requests
     static public async Task GetDictionaryOfRecipesAsync()
     {
         var msg = new HttpRequestMessage(HttpMethod.Get, s_url);
@@ -21,6 +22,7 @@ static public class RecipeRequests
         Recipes = JsonSerializer.Deserialize<Dictionary<Guid, RecipeModel>>(contentString)!;
     }
 
+    // Post requests
     static public async Task AddRecipeAsync(RecipeModel recipe)
     {
         var json = JsonSerializer.Serialize(recipe);
@@ -56,6 +58,54 @@ static public class RecipeRequests
         var data = new StringContent(json, Encoding.UTF8, "application/json");
         string url = s_editUrl + $"/{recipeId}/categories";
         var response = await s_client.PostAsync(url, data);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
+
+    // Delete requests
+    static public async Task DeleteRecipeIngredientsAsync(List<string> ingredients, Guid recipeId)
+    {
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri(s_editUrl + $"/{recipeId}/ingredients"),
+            Content = new StringContent(JsonSerializer.Serialize(ingredients), Encoding.UTF8, "application/json")
+        };
+        var response = await s_client.SendAsync(request);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
+
+    static public async Task DeleteRecipeInstructionsAsync(List<string> instructions, Guid recipeId)
+    {
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri(s_editUrl + $"/{recipeId}/instructions"),
+            Content = new StringContent(JsonSerializer.Serialize(instructions), Encoding.UTF8, "application/json")
+        };
+        var response = await s_client.SendAsync(request);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
+
+    static public async Task DeleteRecipeCategoriesAsync(List<string> categories, Guid recipeId)
+    {
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri(s_editUrl + $"/{recipeId}/categories"),
+            Content = new StringContent(JsonSerializer.Serialize(categories), Encoding.UTF8, "application/json")
+        };
+        var response = await s_client.SendAsync(request);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
+
+    static public async Task DeleteRecipesAsync(Guid recipeId)
+    {
+        string url = s_url + $"/{recipeId}";
+        var response = await s_client.DeleteAsync(url);
         _ = await response.Content.ReadAsStringAsync();
         GetDictionaryOfRecipesAsync().Wait();
     }

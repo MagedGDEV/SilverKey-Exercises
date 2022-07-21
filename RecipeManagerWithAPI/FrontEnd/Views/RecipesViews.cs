@@ -223,7 +223,7 @@ public class RecipesViews
     {
         
         var deleteText = new Markup($"[red]{recipeTitle}[/][blue] is deleted[/]");
-        //TODO: HTTP REQUEST TO DELETE RECIPE
+        RecipeRequests.DeleteRecipesAsync(id).Wait();
         AnsiConsole.Write(deleteText);
         Thread.Sleep(ConsoleViews.SleepTime);
         ConsoleViews.ExitingView();
@@ -410,11 +410,11 @@ public class RecipesViews
             {
                 if (listName == "ingredients")
                 {
-                    //TODO: HTTP REQUEST TO DELETE INGREDIENT
+                    RecipeRequests.DeleteRecipeIngredientsAsync(userChoice, id).Wait();
                 }
                 else
                 {
-                    //TODO: HTTP REQUEST TO DELETE INSTRUCTION
+                    RecipeRequests.DeleteRecipeInstructionsAsync(userChoice, id).Wait();
                 }
             }
         }
@@ -532,7 +532,7 @@ public class RecipesViews
             else
             {
                 AnsiConsole.Write(new Markup("[red]Categories selected are removed[/]"));
-                //TODO: HTTP request to delete categories
+                RecipeRequests.DeleteRecipeCategoriesAsync(userChoice, id).Wait();
                 Thread.Sleep(ConsoleViews.SleepTime);
                 ConsoleViews.ExitingView();
                 EditCategoryInRecipe(id);

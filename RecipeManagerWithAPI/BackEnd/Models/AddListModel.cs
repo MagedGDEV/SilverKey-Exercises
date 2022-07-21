@@ -1,6 +1,4 @@
-﻿using System;
-
-public class AddListModel
+﻿public class AddListModel
 {
     public string ItemToAdd { get; set; }
     public int Position { get; set; }
