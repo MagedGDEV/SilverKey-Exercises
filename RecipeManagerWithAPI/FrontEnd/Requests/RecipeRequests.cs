@@ -109,6 +109,17 @@ static public class RecipeRequests
         _ = await response.Content.ReadAsStringAsync();
         GetDictionaryOfRecipesAsync().Wait();
     }
+
+    // Put requests
+    static public async Task UpdateRecipeIngredientsAsync(string currentIngredient, string updatedIngredient, Guid recipeId)
+    {
+        var json = JsonSerializer.Serialize(updatedIngredient);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        string url = s_editUrl + $"/{recipeId}/ingredient/{currentIngredient}";
+        var response = await s_client.PutAsync(url, data);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
 }
 
 

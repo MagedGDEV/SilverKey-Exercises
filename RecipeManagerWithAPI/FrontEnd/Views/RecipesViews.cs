@@ -365,7 +365,7 @@ public class RecipesViews
                 AnsiConsole.Write(new Markup("[red]Saved[/]"));
                 if (listName == "ingredients")
                 {
-                    //TODO: HTTP REQUEST TO EDIT LIST IN INGREDIENTS
+                    RecipeRequests.UpdateRecipeIngredientsAsync(userChoice, updated, id).Wait();
                 }
                 else
                 {
