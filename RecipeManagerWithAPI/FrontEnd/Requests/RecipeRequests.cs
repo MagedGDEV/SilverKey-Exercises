@@ -120,6 +120,26 @@ static public class RecipeRequests
         _ = await response.Content.ReadAsStringAsync();
         GetDictionaryOfRecipesAsync().Wait();
     }
+
+    static public async Task UpdateRecipeInstructionsAsync(string currentInstruction, string updatedInstruction, Guid recipeId)
+    {
+        var json = JsonSerializer.Serialize(updatedInstruction);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        string url = s_editUrl + $"/{recipeId}/instruction/{currentInstruction}";
+        var response = await s_client.PutAsync(url, data);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
+
+    static public async Task UpdateRecipeTitle(string newTitle, Guid recipeId)
+    {
+        var json = JsonSerializer.Serialize(newTitle);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        string url = s_editUrl + $"/{recipeId}/title";
+        var response = await s_client.PutAsync(url, data);
+        _ = await response.Content.ReadAsStringAsync();
+        GetDictionaryOfRecipesAsync().Wait();
+    }
 }
 
 

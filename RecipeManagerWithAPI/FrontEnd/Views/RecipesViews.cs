@@ -269,7 +269,7 @@ public class RecipesViews
         .PromptStyle("red")
         );
         AnsiConsole.Write(new Markup("[red]saved[/]"));
-        //TODO: HTTP request to edit title
+        RecipeRequests.UpdateRecipeTitle(updatedTitle, id).Wait();
         Thread.Sleep(ConsoleViews.SleepTime);
         ConsoleViews.ExitingView();
         EditRecipe(id);
@@ -369,7 +369,7 @@ public class RecipesViews
                 }
                 else
                 {
-                    //TODO: HTTP REQUEST TO EDIT LIST IN INSTRUCTIONS
+                    RecipeRequests.UpdateRecipeInstructionsAsync(userChoice, updated, id).Wait();
                 }
                 Thread.Sleep(ConsoleViews.SleepTime);
                 ConsoleViews.ExitingView();
