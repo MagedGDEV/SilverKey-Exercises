@@ -74,7 +74,6 @@ public class RecipesServices
         var stream = new FileStream(path, FileMode.Create);
         request.Form.Files[0].CopyTo(stream);
         Recipes[recipeId].AddImage(recipeId);
-        WriteRecipes();
         return Results.File(path);
     }
 
