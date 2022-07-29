@@ -4,6 +4,7 @@
     public List<string> Ingredients { get; set; }
     public List<string> Instructions { get; set; }
     public List<string> Categories { get; set; }
+    public string ImageName { get; set; }
 
     public RecipeModel(string title, List<string> ingredients, List<string> instructions, List<string> categories)
     {
@@ -11,6 +12,12 @@
         Ingredients = new(ingredients);
         Instructions = new(instructions);
         Categories = new(categories);
+        ImageName = "";
+    }
+
+    public void AddImage(Guid id)
+    {
+        ImageName = id.ToString();
     }
 
     public void EditTitle(string newTitle)

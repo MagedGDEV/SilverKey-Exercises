@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Font.Awesome" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Font.Awesome" Version="5.15.4" />
+  </ItemGroup>
 </Project>

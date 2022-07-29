@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json;
+using System.IO.Compression;
 using Microsoft.AspNetCore.Mvc;
 
 public class RecipesServices
@@ -33,10 +34,38 @@ public class RecipesServices
     private IResult AddRecipe(RecipeModel recipe)
     {
         Guid id = Guid.NewGuid();
-        var newRecipe = new RecipeModel(recipe.Title, recipe.Ingredients, recipe.Instructions, recipe.Categories);
         Recipes.Add(id, recipe);
         WriteRecipes();
         return Results.Json(recipe, statusCode: 200);
+    }
+
+    private IResult AddRecipeWithImage(HttpRequest request)
+    {
+        if (request.Form.Files.Count == 0)
+        {
+            
+            return Results.BadRequest("This request is used when there is an image to upload");
+        }
+        Guid id = Guid.NewGuid();
+        var path = Path.Combine(Environment.CurrentDirectory, @"Images", id.ToString());
+        Console.Write(path);
+        var stream = new FileStream(path, FileMode.Create);
+        request.Form.Files[0].CopyTo(stream);
+        var recipe = JsonSerializer.Deserialize<RecipeModel>(request.Form["recipe"], options: options)!;
+        recipe.AddImage(id);
+        Recipes.Add(id, recipe);
+        WriteRecipes();
+        return Results.Ok(recipe);
+    }
+
+    private IResult ReadRecipesWithImages()
+    {
+        var path = Path.Combine(Environment.CurrentDirectory, @"Images");
+        var zipPath = Path.Combine(Environment.CurrentDirectory, @"Images.zip");
+        File.Delete(zipPath);
+        ZipFile.CreateFromDirectory(path, zipPath);
+        string[] files = Directory.GetFiles(path);
+        return Results.File(zipPath);
     }
 
     private IResult DeleteRecipe(Guid recipeId)
@@ -117,7 +146,9 @@ public class RecipesServices
     public void Routing(IEndpointRouteBuilder router)
     {
         router.MapGet("/recipes", ReadRecipes);
+        router.MapGet("/recipesWithImages", ReadRecipesWithImages);
         router.MapPost("/recipes", AddRecipe);
+        router.MapPost("/recipesWithImage", AddRecipeWithImage);
         router.MapGet("/recipes/{recipeId}", GetRecipe);
         router.MapDelete("/recipes/{recipeId}", DeleteRecipe);
         router.MapPut("/recipe/{recipeId}/title", EditRecipeTitle);
