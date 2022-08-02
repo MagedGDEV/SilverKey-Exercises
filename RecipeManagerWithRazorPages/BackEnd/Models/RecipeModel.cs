@@ -15,9 +15,9 @@
         ImageName = "";
     }
 
-    public void AddImage(Guid id)
+    public void AddImage(string id)
     {
-        ImageName = id.ToString();
+        ImageName = id;
     }
 
     public void EditTitle(string newTitle)
