@@ -71,7 +71,10 @@ public class RecipesServices
     private IResult EditRecipeImage(HttpRequest request, Guid recipeId)
     {
         var path = Path.Combine(Environment.CurrentDirectory, @"Images", Recipes[recipeId].ImageName);
-        File.Delete(path);
+        if (Recipes[recipeId].ImageName != "")
+        {
+            File.Delete(path);
+        }
         var type = request.Form.Files[0].ContentType.Replace("image/", ".");
         var stream = new FileStream(path, FileMode.Create);
         request.Form.Files[0].CopyTo(stream);
