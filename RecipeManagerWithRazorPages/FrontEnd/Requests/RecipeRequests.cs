@@ -142,4 +142,6 @@ static public class RecipeRequests
     }
 }
 
+//TODO: add requests for images
+// update url to magedgdev...
 

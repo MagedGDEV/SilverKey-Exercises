@@ -1,0 +1,11 @@
+﻿@page
+@model FrontEnd.Pages.CategoriesModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+@foreach (var category in CategoriesRequests.Categories)
+{
+    <h1>@category</h1>
+}
+

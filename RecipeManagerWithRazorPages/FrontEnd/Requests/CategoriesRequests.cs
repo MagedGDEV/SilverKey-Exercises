@@ -4,7 +4,7 @@ using System.Text.Json;
 
 static public class CategoriesRequests
 {
-    static private string s_url = "https://localhost:5001/categories";
+    static private string s_url = "https://magedgdev.azurewebsites.net/categories";
     static private HttpClient s_client = new();
     static public List<string> Categories = new();
 
