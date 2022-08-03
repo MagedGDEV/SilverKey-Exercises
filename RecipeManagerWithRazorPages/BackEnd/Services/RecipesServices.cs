@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.IO.Compression;
 using Microsoft.AspNetCore.Mvc;
-using static System.Net.Mime.MediaTypeNames;
 
 public class RecipesServices
 {
@@ -50,8 +48,10 @@ public class RecipesServices
         Guid id = Guid.NewGuid();
         var type = request.Form.Files[0].ContentType.Replace("image/", ".");
         var path = Path.Combine(Environment.CurrentDirectory, @"Images", id.ToString() + type);
-        var stream = new FileStream(path, FileMode.Create);
-        request.Form.Files[0].CopyTo(stream);
+        using (var stream = new FileStream(path, FileMode.Create))
+        {
+            request.Form.Files[0].CopyTo(stream);
+        }   
         var recipe = JsonSerializer.Deserialize<RecipeModel>(request.Form["recipe"], options: options)!;
         recipe.AddImage(id.ToString() + type);
         Recipes.Add(id, recipe);
@@ -63,38 +63,53 @@ public class RecipesServices
     {
         var path = Path.Combine(Environment.CurrentDirectory, @"Images");
         var zipPath = Path.Combine(Environment.CurrentDirectory, @"Images.zip");
-        File.Delete(zipPath);
+        string[] fileName = Directory.GetFiles(Environment.CurrentDirectory);
+        if (fileName.Contains(zipPath))
+        {
+            File.Delete(zipPath);
+        }
         ZipFile.CreateFromDirectory(path, zipPath);
-        return Results.File(zipPath, contentType:"application/zip");
+        return Results.File(zipPath, contentType: "application/zip");
     }
 
     private IResult EditRecipeImage(HttpRequest request, Guid recipeId)
     {
-        var path = Path.Combine(Environment.CurrentDirectory, @"Images", Recipes[recipeId].ImageName);
         if (Recipes[recipeId].ImageName != "")
         {
-            File.Delete(path);
+            var deletePath = Path.Combine(Environment.CurrentDirectory, @"Images", Recipes[recipeId].ImageName);
+            File.Delete(deletePath);
         }
         var type = request.Form.Files[0].ContentType.Replace("image/", ".");
-        var stream = new FileStream(path, FileMode.Create);
-        request.Form.Files[0].CopyTo(stream);
-        Recipes[recipeId].AddImage(recipeId.ToString() + type);
-        return Results.File(path, contentType: "image/");
+        var path = Path.Combine(Environment.CurrentDirectory, @"Images", recipeId.ToString()+type);
+        using (var stream = new FileStream(path, FileMode.Create))
+        {
+            request.Form.Files[0].CopyTo(stream);
+            Recipes[recipeId].AddImage(recipeId.ToString() + type);
+            WriteRecipes();
+            return Results.File(path, contentType: "image/");
+        }
     }
 
     private IResult DeleteRecipeImage(Guid recipeId)
     {
         var path = Path.Combine(Environment.CurrentDirectory, @"Images", Recipes[recipeId].ImageName);
-        File.Delete(path);
-        Recipes[recipeId].ImageName = "";
-        WriteRecipes();
+        if (Recipes[recipeId].ImageName != "")
+        {
+            File.Delete(path);
+            Recipes[recipeId].ImageName = "";
+            WriteRecipes();
+        }
         return Results.Ok(Recipes[recipeId]);
     }
 
     private IResult DeleteRecipe(Guid recipeId)
     {
         var path = Path.Combine(Environment.CurrentDirectory, @"Images", Recipes[recipeId].ImageName);
-        File.Delete(path);
+        if (Recipes[recipeId].ImageName != "")
+        {
+            File.Delete(path);
+            Recipes[recipeId].ImageName = "";
+        }
         Recipes.Remove(recipeId);
         WriteRecipes();
         return Results.Json(recipeId, statusCode: 200);
