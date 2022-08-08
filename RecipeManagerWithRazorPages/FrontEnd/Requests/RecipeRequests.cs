@@ -4,8 +4,8 @@ using System.Text.Json;
 
 static public class RecipeRequests
 {
-    static private string s_url = "https://localhost:5001/recipes";
-    static private string s_editUrl = "https://localhost:5001/recipe";
+    static private string s_url = "https://magedgdev.azurewebsites.net/recipes";
+    static private string s_editUrl = "https://magedgdev.azurewebsites.net/recipe";
     static private HttpClient s_client = new();
     static public Dictionary<Guid, RecipeModel> Recipes = new();
 

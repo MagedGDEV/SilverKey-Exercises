@@ -110,3 +110,27 @@ body {
         padding-left: 20%;
     }
 }
+
+/*categories styling */
+
+.categories-position {
+    margin-top: 80px;
+}
+
+.categories-title {
+    font-size: 4rem;
+    margin-bottom: 25px;
+}
+
+.categories-buttons {
+
+    width: 20px;
+}
+
+.categories-name {
+    font-size: 24px;
+}
+
+.categories-forms {
+    display: inline;
+}

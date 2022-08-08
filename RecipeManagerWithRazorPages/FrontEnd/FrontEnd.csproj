@@ -10,9 +10,7 @@
     <None Remove="Font.Awesome" />
     <None Remove="Models\" />
     <None Remove="Requests\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Font.Awesome" Version="5.15.4" />
+    <None Remove="SweetAlert.Bootstrap" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\images\" />
