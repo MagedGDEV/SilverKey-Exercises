@@ -10,15 +10,23 @@ namespace FrontEnd.Pages
 {
     public class CategoriesModel : PageModel
     {
+        [TempData]
+        public string Option { get; set; } = "";
+        public bool OptionFlag { get; set; } = false;
         public string? CategoryToDelete;
+        [TempData]
+        public string CategoryInAlert { get; set; } = "";
+
         public void OnGet()
         {
             CategoriesRequests.GetListOfCategoriesAsync().Wait();
         }
 
-        public IActionResult OnPostDelete(string categoryToDelete)
+        public ActionResult OnPostDelete(string categoryToDelete)
         {
-            CategoriesRequests.DeleteCategoryAsync(categoryToDelete!).Wait();
+            TempData["Option"] = "delete";
+            TempData["CategoryInAlert"] = categoryToDelete;
+            CategoriesRequests.DeleteCategoryAsync(categoryToDelete).Wait();
             return RedirectToPage("/Categories");
         }
     }

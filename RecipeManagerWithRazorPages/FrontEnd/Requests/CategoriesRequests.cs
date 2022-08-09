@@ -7,6 +7,7 @@ static public class CategoriesRequests
     static private string s_url = "https://magedgdev.azurewebsites.net/categories";
     static private HttpClient s_client = new();
     static public List<string> Categories = new();
+    
 
     static CategoriesRequests()
     {
@@ -18,6 +19,7 @@ static public class CategoriesRequests
         var res = await s_client.SendAsync(msg);
         var contentString = await res.Content.ReadAsStringAsync();
         Categories = JsonSerializer.Deserialize<List<string>>(contentString)!;
+        Categories.Sort();
     }
 
     static public async Task AddCategoryAsync(string category)

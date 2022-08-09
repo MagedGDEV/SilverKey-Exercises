@@ -1,4 +1,5 @@
-﻿@page 
+﻿@page
+
 @model FrontEnd.Pages.CategoriesModel
 @{
     ViewData["Title"] = "Categories";
@@ -6,31 +7,83 @@
 <div class="categories-position">
     <h1 class="categories-title">Categories</h1>
     <ul class="list-group">
-        @foreach (var category in CategoriesRequests.Categories)
+        @for (int i = 0; i < CategoriesRequests.Categories.Count; i++)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="categories-name">@category</span>
-                <div>
-                    <form method="post" asp-page-handler="edit" class="categories-forms">
-                        <button type="submit" class="btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#0f52fc" class="bi bi-pencil-fill categories-buttons" viewBox="0 0 16 16">
-                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="categories-name">@CategoriesRequests.Categories[i]</span>
+            <div>
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editModal@(i)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#0f52fc" class="bi bi-pencil-fill categories-buttons" viewBox="0 0 16 16">
+                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                    </svg>
+                </button>
+
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deleteModal@(i)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#0f52fc" class="bi bi-trash-fill categories-buttons" viewBox="0 0 16 16">
+                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal fade" id="deleteModal@(i)" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body modal-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#F9C398" class="bi bi-exclamation-circle modal-icon" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
                             </svg>
-                        </button>
-                    </form>
-                    
-                    <form method="post" asp-page-handler="delete" class="categories-forms">
-                        <input asp-for="CategoryToDelete" value=@category hidden="hidden"/>
-                        <button type="submit" class="btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#0f52fc" class="bi bi-trash-fill categories-buttons" viewBox="0 0 16 16">
-                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                            </svg>
-                        </button>
-                    </form>
-                    
+                            <div class="modal-question">Are you sure you want to delete <span class="modal-item">"@CategoriesRequests.Categories[i]"</span>?</div>
+                            <div class="modal-text">You won't be able to revert this!</div>
+                            <form method="post" asp-page-handler="delete" class="modal-forms">
+                                <input asp-for="CategoryToDelete" value=@CategoriesRequests.Categories[i] hidden="hidden" />
+                                <button type="submit" class="btn btn-danger modal-buttons" data-bs-dismiss="modal">Yes, delete it!</button>
+                            </form>
+                            <button type="button" class="btn btn-secondary modal-buttons" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                        </div>
+                    </div>
                 </div>
-            </li>
+            </div>
+
+            <div class="modal fade" id="editModal@(i)" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form>
+                                <div class="mb-3">
+                                    <div for="recipient-name" class="col-form-label">Change <span>@CategoriesRequests.Categories[i]</span> into</div>
+                                    <input type="text" class="form-control" id="recipient-name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message-text" class="col-form-label">Message:</label>
+                                    <textarea class="form-control" id="message-text"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Send message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </li>
         }
     </ul>
+
 </div>
+
+<script type="text/javascript">
+    if ('@TempData["Option"]' == "delete") {
+        Swal.fire({
+            icon: 'success',
+            title: '@TempData["CategoryInAlert"] has been deleted',
+            showConfirmButton: false,
+            timer: 2000
+        })
+    }
+</script>
+
+
 
