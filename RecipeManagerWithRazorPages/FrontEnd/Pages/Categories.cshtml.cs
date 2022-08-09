@@ -40,7 +40,7 @@ namespace FrontEnd.Pages
             TempData["NewCategoryInAlert"] = newCategoryTitle;
             if (CategoriesRequests.Categories.Contains(newCategoryTitle))
             {
-                TempData["Option"] = "editError";
+                TempData["Option"] = "newCategoryError";
             }
             else
             {
@@ -48,6 +48,21 @@ namespace FrontEnd.Pages
                 CategoriesRequests.UpdateCategoryAsync(categoryToEdit, newCategoryTitle).Wait();
             }
 
+            return RedirectToPage("/Categories");
+        }
+
+        public ActionResult OnPostAdd(string newCategoryTitle)
+        {
+            TempData["NewCategoryInAlert"] = newCategoryTitle;
+            if (CategoriesRequests.Categories.Contains(newCategoryTitle))
+            {
+                TempData["Option"] = "newCategoryError";
+            }
+            else
+            {
+                TempData["Option"] = "add";
+                CategoriesRequests.AddCategoryAsync(newCategoryTitle).Wait();
+            }
             return RedirectToPage("/Categories");
         }
     }

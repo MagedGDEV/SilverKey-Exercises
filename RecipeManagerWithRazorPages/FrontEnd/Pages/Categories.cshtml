@@ -7,9 +7,24 @@
 <div class="categories-position">
     <div class="categories-head">
         <h1 class="categories-title categories-inline">Categories</h1>
-        <button type="button" class="btn btn-primary btn-lg categories-inline categories-add">
+        <button type="button" class="btn btn-primary btn-lg categories-inline categories-add" data-bs-toggle="modal" data-bs-target="#AddModal">
             Add Category
         </button>
+    </div>
+    @*Add Modal*@
+    <div class="modal fade" id="AddModal" tabindex="-1" aria-labelledby="AddModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body modal-center">
+                    <form method="post" asp-page-handler="add" class="categories-inline">
+                        <div class="modal-question">What is the new category title?</div>
+                        <input asp-for="NewCategoryTitle" type="text" class="modal-textbox"> <br />
+                        <button type="submit" class="btn btn-success modal-buttons" data-bs-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-secondary modal-buttons" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     <ul class="list-group">
         @for (int i = 0; i < CategoriesRequests.Categories.Count; i++)
@@ -50,7 +65,7 @@
                     </div>
                 </div>
                 @*Edit Modal*@
-                <div class="modal fade" id="editModal@(i)" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="editModal@(i)" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-body modal-center">
@@ -66,16 +81,16 @@
                     </div>
                 </div>
             </li>
+            <br />
         }
     </ul>
-
 </div>
 
 <script type="text/javascript">
     if ('@TempData["Option"]' == "delete") {
         Swal.fire({
             icon: 'success',
-            title: '@TempData["CategoryInAlert"] has been removed',
+            title: '@TempData["CategoryInAlert"] is removed',
             showConfirmButton: false,
             timer: 2000
         })
@@ -83,15 +98,23 @@
     else if ('@TempData["Option"]' == "edit") {
         Swal.fire({
             icon: 'success',
-            title: '@TempData["CategoryInAlert"] has been changed into @TempData["NewCategoryInAlert"]',
+            title: '@TempData["CategoryInAlert"] changed into @TempData["NewCategoryInAlert"]',
             showConfirmButton: false,
             timer: 3000
         })
     }
-    else if ('@TempData["Option"]' == "editError") {
+    else if ('@TempData["Option"]' == "newCategoryError") {
         Swal.fire({
             icon: 'error',
             title: '@TempData["NewCategoryInAlert"] is already available, use another title',
+            showConfirmButton: false,
+            timer: 3000
+        })
+    }
+    else if ('@TempData["Option"]' == "add") {
+        Swal.fire({
+            icon: 'success',
+            title: '@TempData["NewCategoryInAlert"] is added',
             showConfirmButton: false,
             timer: 3000
         })
