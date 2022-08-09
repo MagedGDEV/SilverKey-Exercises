@@ -122,10 +122,6 @@ body {
     margin-bottom: 12px;
 }
 
-.modal-forms {
-    display: inline;
-}
-
 .modal-icon {
     width: 30%;
     margin-bottom: 30px;
@@ -146,8 +142,12 @@ body {
     font-size: 125%;
     margin-bottom: 20px;
 }
-/*categories styling */
 
+.modal-textbox {
+    margin-bottom: 20px;
+    width: 85%;
+}
+/*categories styling */
 .categories-position {
     margin-top: 80px;
 }
@@ -157,11 +157,25 @@ body {
     margin-bottom: 25px;
 }
 
-.categories-buttons {
+.categories-inline {
+    display: inline;
+}
 
+.categories-buttons {
     width: 20px;
 }
 
 .categories-name {
     font-size: 150%;
 }
+
+.categories-add {
+    float: right;
+    margin-right: 10px;
+    margin-top: 8px;
+}
+
+.categories-head {
+    margin-bottom: 28px;
+}
+
