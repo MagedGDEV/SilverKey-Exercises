@@ -81,8 +81,9 @@ body {
     .welcome-message {
         font-size: 300%;
     }
-    body {
-       text-align: center;
+
+    .index {
+        text-align: center;
     }
 
     .welcome-div {
@@ -92,8 +93,12 @@ body {
 
     .weclome {
         padding-left: 0;
+        text-align: center;
     }
-   
+
+    .navigation {
+        text-align: center;
+    }
 }
 
 @media (max-width:600px) {
@@ -148,6 +153,7 @@ body {
     width: 85%;
 }
 /*categories styling */
+
 .categories-position {
     margin-top: 80px;
 }
@@ -155,6 +161,7 @@ body {
 .categories-title {
     font-size: 300%;
     margin-bottom: 25px;
+    position: relative;
 }
 
 .categories-inline {
@@ -178,4 +185,5 @@ body {
 .categories-head {
     margin-bottom: 28px;
 }
+
 
