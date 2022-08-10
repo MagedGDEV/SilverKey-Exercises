@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -6,6 +8,7 @@ static public class RecipeRequests
 {
     static private string s_url = "https://magedgdev.azurewebsites.net/recipes";
     static private string s_editUrl = "https://magedgdev.azurewebsites.net/recipe";
+    static private string s_urlImage = "https://magedgdev.azurewebsites.net/recipesWithImage";
     static private HttpClient s_client = new();
     static public Dictionary<Guid, RecipeModel> Recipes = new();
 
@@ -20,6 +23,20 @@ static public class RecipeRequests
         var res = await s_client.SendAsync(msg);
         var contentString = await res.Content.ReadAsStringAsync();
         Recipes = JsonSerializer.Deserialize<Dictionary<Guid, RecipeModel>>(contentString)!;
+    }
+
+    static public async Task GetRecipesImagesAsync()
+    {
+        var fileInfo = new FileInfo($"Images.zip");
+        var response = await s_client.GetAsync(s_urlImage);
+        var msg = await response.Content.ReadAsStreamAsync();
+        
+        var zipPath = Path.Combine(Environment.CurrentDirectory, @"Images.zip");
+        using (var stream = new FileStream(zipPath, FileMode.Create))
+        {
+            msg.CopyTo(stream);
+        }
+        Debug.WriteLine(zipPath);
     }
 
     // Post requests
@@ -131,7 +148,7 @@ static public class RecipeRequests
         GetDictionaryOfRecipesAsync().Wait();
     }
 
-    static public async Task UpdateRecipeTitle(string newTitle, Guid recipeId)
+    static public async Task UpdateRecipeTitleAsync(string newTitle, Guid recipeId)
     {
         var json = JsonSerializer.Serialize(newTitle);
         var data = new StringContent(json, Encoding.UTF8, "application/json");

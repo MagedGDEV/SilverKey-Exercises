@@ -11,6 +11,7 @@ namespace FrontEnd.Pages
     {
         public void OnGet()
         {
+            RecipeRequests.GetRecipesImagesAsync().Wait();
         }
     }
 }
