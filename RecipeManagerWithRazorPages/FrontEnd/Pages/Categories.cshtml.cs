@@ -38,16 +38,20 @@ namespace FrontEnd.Pages
         {
             TempData["CategoryInAlert"] = categoryToEdit;
             TempData["NewCategoryInAlert"] = newCategoryTitle;
+            Debug.Write(newCategoryTitle);
             if (CategoriesRequests.Categories.Contains(newCategoryTitle))
             {
                 TempData["Option"] = "newCategoryError";
+            }
+            else if (newCategoryTitle == null)
+            {
+                TempData["Option"] = "emptyError";
             }
             else
             {
                 TempData["Option"] = "edit";
                 CategoriesRequests.UpdateCategoryAsync(categoryToEdit, newCategoryTitle).Wait();
             }
-
             return RedirectToPage("/Categories");
         }
 
@@ -57,6 +61,11 @@ namespace FrontEnd.Pages
             if (CategoriesRequests.Categories.Contains(newCategoryTitle))
             {
                 TempData["Option"] = "newCategoryError";
+            }
+            else if (newCategoryTitle == null)
+            {
+                TempData["Option"] = "emptyError";
+                Debug.Write("y3aaam");
             }
             else
             {

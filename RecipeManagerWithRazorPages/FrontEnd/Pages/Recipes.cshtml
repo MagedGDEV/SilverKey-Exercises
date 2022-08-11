@@ -1,5 +1,24 @@
 ﻿@page
 @model FrontEnd.Pages.RecipesModel
-@{
+@{ 
+    ViewData["Title"] = "Recipes";
 }
 
+<div class="page-position">
+    <div class="page-head">
+        <h1 class="page-title inline">Recipes</h1>
+        <button type="button" class="btn btn-primary btn-lg inline page-add" data-bs-toggle="modal" data-bs-target="#AddModal">
+            Add Recipe
+        </button>
+    </div>
+</div>
+<ul>
+    @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
+        {
+            <li>@recipe.Value.Title</li>
+            if (recipe.Value.ImageName == "")
+                {
+
+                }
+        }
+</ul>

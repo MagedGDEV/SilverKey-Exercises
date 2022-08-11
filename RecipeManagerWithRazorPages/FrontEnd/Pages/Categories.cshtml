@@ -4,10 +4,10 @@
 @{
     ViewData["Title"] = "Categories";
 }
-<div class="categories-position">
-    <div class="categories-head">
-        <h1 class="categories-title categories-inline">Categories</h1>
-        <button type="button" class="btn btn-primary btn-lg categories-inline categories-add" data-bs-toggle="modal" data-bs-target="#AddModal">
+<div class="page-position">
+    <div class="page-head">
+        <h1 class="page-title inline">Categories</h1>
+        <button type="button" class="btn btn-primary btn-lg inline page-add" data-bs-toggle="modal" data-bs-target="#AddModal">
             Add Category
         </button>
     </div>
@@ -16,7 +16,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body modal-center">
-                    <form method="post" asp-page-handler="add" class="categories-inline">
+                    <form method="post" asp-page-handler="add" class="inline">
                         <div class="modal-question">What is the new category title?</div>
                         <input asp-for="NewCategoryTitle" type="text" class="modal-textbox"> <br />
                         <button type="submit" class="btn btn-success modal-buttons" data-bs-dismiss="modal">Save</button>
@@ -55,7 +55,7 @@
                                 </svg>
                                 <div class="modal-question">Are you sure you want to delete <span class="modal-item">"@CategoriesRequests.Categories[i]"</span>?</div>
                                 <div class="modal-text">You won't be able to revert this!</div>
-                                <form method="post" asp-page-handler="delete" class="categories-inline">
+                                <form method="post" asp-page-handler="delete" class="inline">
                                     <input asp-for="CategoryToDelete" value=@CategoriesRequests.Categories[i] hidden="hidden" />
                                     <button type="submit" class="btn btn-danger modal-buttons" data-bs-dismiss="modal">Yes, delete it!</button>
                                 </form>
@@ -69,7 +69,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-body modal-center">
-                                <form method="post" asp-page-handler="edit" class="categories-inline">
+                                <form method="post" asp-page-handler="edit" class="inline">
                                     <div class="modal-question">Change <span class="modal-item">@CategoriesRequests.Categories[i]</span> into</div>
                                     <input asp-for="NewCategoryTitle" type="text" class="modal-textbox">
                                     <input asp-for="CategoryToEdit" value=@CategoriesRequests.Categories[i] hidden="hidden" /> <br />
@@ -107,6 +107,14 @@
         Swal.fire({
             icon: 'error',
             title: '@TempData["NewCategoryInAlert"] is already available, use another title',
+            showConfirmButton: false,
+            timer: 3000
+        })
+    }
+    else if ('@TempData["Option"]' == "emptyError") {
+        Swal.fire({
+            icon: 'error',
+            title: 'You didn\'t enter category title',
             showConfirmButton: false,
             timer: 3000
         })

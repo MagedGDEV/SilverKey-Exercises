@@ -15,6 +15,31 @@ body {
     background-image: url("https://www.transparenttextures.com/patterns/food.png");
 }
 
+.inline {
+    display: inline;
+}
+
+/* common styling */
+.page-position {
+    margin-top: 80px;
+}
+
+.page-head {
+    margin-bottom: 28px;
+}
+
+.page-title {
+    font-size: 300%;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.page-add {
+    float: right;
+    margin-right: 10px;
+    margin-top: 8px;
+}
+
 /*index styling */
 
 .welcome {
@@ -152,21 +177,8 @@ body {
     margin-bottom: 20px;
     width: 85%;
 }
+
 /*categories styling */
-
-.categories-position {
-    margin-top: 80px;
-}
-
-.categories-title {
-    font-size: 300%;
-    margin-bottom: 25px;
-    position: relative;
-}
-
-.categories-inline {
-    display: inline;
-}
 
 .categories-buttons {
     width: 20px;
@@ -176,14 +188,7 @@ body {
     font-size: 150%;
 }
 
-.categories-add {
-    float: right;
-    margin-right: 10px;
-    margin-top: 8px;
-}
 
-.categories-head {
-    margin-bottom: 28px;
-}
+
 
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -8,7 +10,7 @@ static public class RecipeRequests
 {
     static private string s_url = "https://magedgdev.azurewebsites.net/recipes";
     static private string s_editUrl = "https://magedgdev.azurewebsites.net/recipe";
-    static private string s_urlImage = "https://magedgdev.azurewebsites.net/recipesWithImage";
+    static private string s_urlImage = "https://magedgdev.azurewebsites.net/recipesWithImages";
     static private HttpClient s_client = new();
     static public Dictionary<Guid, RecipeModel> Recipes = new();
 
@@ -27,16 +29,31 @@ static public class RecipeRequests
 
     static public async Task GetRecipesImagesAsync()
     {
-        var fileInfo = new FileInfo($"Images.zip");
-        var response = await s_client.GetAsync(s_urlImage);
-        var msg = await response.Content.ReadAsStreamAsync();
-        
+        var msg = new HttpRequestMessage(HttpMethod.Get, s_urlImage);
+        var res = await s_client.SendAsync(msg);
+        var content = await res.Content.ReadAsStreamAsync();
+        Debug.Write(msg.Headers);
         var zipPath = Path.Combine(Environment.CurrentDirectory, @"Images.zip");
-        using (var stream = new FileStream(zipPath, FileMode.Create))
+        string[] fileName = Directory.GetFiles(Environment.CurrentDirectory);
+        if (fileName.Contains(zipPath))
         {
-            msg.CopyTo(stream);
+            File.Delete(zipPath);
         }
-        Debug.WriteLine(zipPath);
+        using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Create))
+        {
+            using var sourceZIP = new ZipArchive(content, ZipArchiveMode.Read, false);
+            using (var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+            {
+                foreach (var sourceEntry in sourceZIP.Entries)
+                {
+                    Debug.Write(sourceEntry.FullName);
+                    using (Stream targetEntryStream = archive.CreateEntry(sourceEntry.FullName).Open())
+                    {
+                        sourceEntry.Open().CopyTo(targetEntryStream);
+                    }
+                }
+            }
+        }
     }
 
     // Post requests
@@ -161,4 +178,7 @@ static public class RecipeRequests
 
 //TODO: add requests for images
 // update url to magedgdev...
+// Get zip of images --->> done
+// Delete image
+// Edit image
 
