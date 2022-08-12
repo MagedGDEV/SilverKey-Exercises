@@ -32,12 +32,22 @@ static public class RecipeRequests
         var msg = new HttpRequestMessage(HttpMethod.Get, s_urlImage);
         var res = await s_client.SendAsync(msg);
         var content = await res.Content.ReadAsStreamAsync();
-        Debug.Write(msg.Headers);
         var zipPath = Path.Combine(Environment.CurrentDirectory, @"Images.zip");
         string[] fileName = Directory.GetFiles(Environment.CurrentDirectory);
+        string[] directoryName = Directory.GetDirectories(Path.Combine(Environment.CurrentDirectory, @"wwwroot"));
+        string imageDirectoryPath = Path.Combine(Environment.CurrentDirectory, @"wwwroot", @"recipeImages");
         if (fileName.Contains(zipPath))
         {
             File.Delete(zipPath);
+        }
+        if (directoryName.Contains(imageDirectoryPath))
+        {
+            string[] imagesNames = Directory.GetFiles(imageDirectoryPath);
+            foreach (var image in imagesNames)
+            {
+                File.Delete(image);
+            }
+            Directory.Delete(imageDirectoryPath);
         }
         using (FileStream zipToOpen = new FileStream(zipPath, FileMode.Create))
         {
@@ -46,7 +56,6 @@ static public class RecipeRequests
             {
                 foreach (var sourceEntry in sourceZIP.Entries)
                 {
-                    Debug.Write(sourceEntry.FullName);
                     using (Stream targetEntryStream = archive.CreateEntry(sourceEntry.FullName).Open())
                     {
                         sourceEntry.Open().CopyTo(targetEntryStream);
@@ -54,6 +63,7 @@ static public class RecipeRequests
                 }
             }
         }
+        ZipFile.ExtractToDirectory(zipPath, imageDirectoryPath);
     }
 
     // Post requests

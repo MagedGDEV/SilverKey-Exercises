@@ -1,6 +1,6 @@
 ﻿@page
 @model FrontEnd.Pages.RecipesModel
-@{ 
+@{
     ViewData["Title"] = "Recipes";
 }
 
@@ -14,11 +14,25 @@
 </div>
 <ul>
     @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
-        {
-            <li>@recipe.Value.Title</li>
-            if (recipe.Value.ImageName == "")
-                {
+    {
+        <li>
 
+            @recipe.Value.ImageName
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card">
+                        @if(recipe.Value.ImageName != "")
+                {
+                        <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top" alt="...">
                 }
-        }
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">@recipe.Value.Title</h5>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    }
 </ul>
