@@ -11,18 +11,29 @@
             Add Recipe
         </button>
     </div>
-    @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
-    {
-        <div class="card card-recipe" style="width: 18rem;">
-            @if (recipe.Value.ImageName != "")
-            {
-                <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top image" alt="recipe image">
-            }
-            <div class="card-body card-title-section">
-                <h5>@recipe.Value.Title</h5>
+    <div class="recipes-cards">
+        @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
+        {
+            <div class="card card-recipe">
+                @if (recipe.Value.ImageName != "")
+                {
+                    <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top image" alt="recipe image">
+                }
+                <div class="card-body card-title-section">
+                    <h5>@recipe.Value.Title</h5>
+                </div>
+                <div>
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        if (recipe.Value.Categories.Count > i)
+                        {
+                            <span class="badge rounded-pill recipes-categories">@recipe.Value.Categories[i]</span>
+                        }
+                    }
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
 
