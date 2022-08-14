@@ -11,28 +11,21 @@
             Add Recipe
         </button>
     </div>
-</div>
-<ul>
     @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
     {
-        <li>
-
-            @recipe.Value.ImageName
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card">
-                        @if(recipe.Value.ImageName != "")
-                {
-                        <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top" alt="...">
-                }
-                        
-                        <div class="card-body">
-                            <h5 class="card-title">@recipe.Value.Title</h5>
-
-                        </div>
-                    </div>
-                </div>
+        <div class="card card-recipe" style="width: 18rem;">
+            @if (recipe.Value.ImageName != "")
+            {
+                <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top image" alt="recipe image">
+            }
+            <div class="card-body card-title-section">
+                <h5>@recipe.Value.Title</h5>
             </div>
-        </li>
+        </div>
     }
-</ul>
+</div>
+
+
+
+
+

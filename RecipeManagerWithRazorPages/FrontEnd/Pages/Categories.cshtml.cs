@@ -24,6 +24,7 @@ namespace FrontEnd.Pages
         public void OnGet()
         {
             CategoriesRequests.GetListOfCategoriesAsync().Wait();
+            RecipeRequests.GetDictionaryOfRecipesAsync().Wait();
         }
 
         public ActionResult OnPostDelete(string categoryToDelete)

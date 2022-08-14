@@ -189,6 +189,43 @@ body {
 }
 
 
+/*recipe cards styling*/
 
+.card-recipe {
+    float: left;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.card-title-section {
+    position: relative;
+    overflow:hidden;
+}
+
+.card-title-section h5 {
+    display: inline-block;
+    min-width: 100%;
+    white-space: nowrap;
+}
+
+@keyframes marqueein {
+    from {
+        transform: translateX(0);
+        margin-left: 0;
+    }
+
+    to {
+        transform: translateX(-100%);
+        margin-left: 100%;
+    }
+}
+
+.card-title-section h5:hover {
+    animation: marqueein 1.5s ease-in-out forwards;
+}
+
+.image {
+    height: 200px;
+}
 
 
