@@ -11,27 +11,36 @@
             Add Recipe
         </button>
     </div>
+
     <div class="recipes-cards">
         @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
         {
-            <div class="card card-recipe">
-                @if (recipe.Value.ImageName != "")
-                {
-                    <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top image" alt="recipe image">
-                }
-                <div class="card-body card-title-section">
-                    <h5>@recipe.Value.Title</h5>
-                </div>
-                <div>
-                    @for (int i = 0; i < 3; i++)
-                    {
-                        if (recipe.Value.Categories.Count > i)
-                        {
-                            <span class="badge rounded-pill recipes-categories">@recipe.Value.Categories[i]</span>
-                        }
-                    }
-                </div>
-            </div>
+            if (recipe.Value.ImageName != "")
+            {
+                <form method="post" asp-page-handler="recipePage" class="inline">
+                    <input asp-for="RecipeId" value=@recipe.Key hidden="hidden" />
+                    <button type="submit" class="recipe-card-buttons">
+                        <div class="card card-recipe">
+
+                            <img src="/recipeImages/@recipe.Value.ImageName" class="card-img-top image" alt="recipe image">
+
+                            <div class="card-body card-title-section">
+                                <h5>@recipe.Value.Title</h5>
+                            </div>
+                            <div>
+                                @for (int i = 0; i < 3; i++)
+                                {
+                                    if (recipe.Value.Categories.Count > i)
+                                    {
+                                        <span class="badge rounded-pill recipes-categories">@recipe.Value.Categories[i]</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </button>
+
+                </form>
+            }
         }
     </div>
 </div>

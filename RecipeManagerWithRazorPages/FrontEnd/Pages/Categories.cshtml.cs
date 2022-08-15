@@ -66,7 +66,6 @@ namespace FrontEnd.Pages
             else if (newCategoryTitle == null)
             {
                 TempData["Option"] = "emptyError";
-                Debug.Write("y3aaam");
             }
             else
             {

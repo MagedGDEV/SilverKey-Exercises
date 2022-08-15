@@ -1,0 +1,77 @@
+﻿@page
+@model FrontEnd.Pages.RecipePageModel
+@{
+    ViewData["Title"] = RecipeRequests.Recipes[Model.RecipeId].Title;
+}
+
+@if (Model.Recipe!.ImageName != "")
+{
+    <div class="page-position">
+        <div>
+            <h1 class="recipe-page-title">@Model.Recipe!.Title</h1>
+            <br />
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active nav-recipes" id="nav-ingredient-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Ingredients</button>
+                            <button class="nav-link nav-recipes" id="nav-instruction-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Instructions</button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-ingredient-tab">
+                            <div>
+                                <ul class="recipe-lists">
+                                    @for (int i = 0; i < Model.Recipe!.Ingredients.Count; i++)
+                                    {
+                                        if (i % 2 == 0)
+                                        {
+                                            <li>@Model.Recipe!.Ingredients[i]</li>
+                                        }
+                                        else
+                                        {
+                                            <li>@Model.Recipe!.Ingredients[i]</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-instruction-tab">
+                            <div>
+                                <ol class="recipe-lists">
+                                    @for (int i = 0; i < Model.Recipe!.Instructions.Count; i++)
+                                    {
+                                        if (i % 2 == 0)
+                                        {
+                                            <li>@Model.Recipe!.Instructions[i].</li>
+                                        }
+                                        else
+                                        {
+                                            <li>@Model.Recipe!.Instructions[i].</li>
+                                        }
+                                    }
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h1>Categories</h1>
+                        <hr />
+                        <div class="recipe-categories">
+                            @for (int i = 0; i < Model.Recipe!.Categories.Count; i++)
+                            {
+                                    <span class="badge rounded-pill recipe-category">@Model.Recipe!.Categories[i]</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="/recipeImages/@Model.Recipe!.ImageName" class="card-img-top" alt="recipe image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
