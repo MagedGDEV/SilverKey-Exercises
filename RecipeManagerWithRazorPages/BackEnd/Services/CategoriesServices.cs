@@ -23,7 +23,7 @@ public class CategoriesServices
     private void WriteCategories()
     {
         var jsonString = JsonSerializer.Serialize(_categories);
-        File.WriteAllText(CategoriesFileName, jsonString);
+         File.WriteAllText(CategoriesFileName, jsonString);
     }
 
     private IResult AddCategory([FromBody]string category)
