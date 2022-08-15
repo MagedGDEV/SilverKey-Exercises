@@ -11,30 +11,29 @@ public class CategoriesServices
         _categories = new();
     }
 
-    private IResult ReadCategories()
+    private async Task<IResult> ReadCategoriesAsync()
     {
-        var jsonString = File.ReadAllText(CategoriesFileName);
+        var jsonString = await File.ReadAllTextAsync(CategoriesFileName);
         var categories = JsonSerializer.Deserialize<List<string>>(jsonString);
         ArgumentNullException.ThrowIfNull(categories);
         _categories = categories;
         return Results.Json(_categories, statusCode: 200);
     }
 
-    private void WriteCategories()
+    private async Task WriteCategoriesAsync()
     {
         var jsonString = JsonSerializer.Serialize(_categories);
-         File.WriteAllText(CategoriesFileName, jsonString);
+         await File.WriteAllTextAsync(CategoriesFileName, jsonString);
     }
 
-    private IResult AddCategory([FromBody]string category)
+    private async Task<IResult> AddCategoryAsync([FromBody]string category)
     {
         _categories.Add(category);
-        WriteCategories();
-        //TODO: If item already available send different status code 
+        await WriteCategoriesAsync();
         return Results.Json(category, statusCode: 200);
     }
 
-    private IResult UpdateCategory(string oldTitle,[FromBody] string newTitle)
+    private async Task<IResult> UpdateCategoryAsync(string oldTitle,[FromBody] string newTitle)
     {
         int index = _categories.IndexOf(oldTitle);
         _categories[index] = newTitle;
@@ -45,12 +44,12 @@ public class CategoriesServices
                 RecipesServices.Recipes[recipe.Key].EditCategory(oldTitle, newTitle);
             }
         }
-        WriteCategories();
-        RecipesServices.WriteRecipes();
+        await WriteCategoriesAsync();
+        await RecipesServices.WriteRecipesAsync();
         return Results.Json(index, statusCode: 200);
     }
 
-    private IResult DeleteCategory(string titleToDelete)
+    private async Task<IResult> DeleteCategoryAsync(string titleToDelete)
     {
         _categories.Remove(titleToDelete);
         foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipesServices.Recipes)
@@ -60,16 +59,16 @@ public class CategoriesServices
                 RecipesServices.Recipes[recipe.Key].DeleteCategory(titleToDelete);
             }
         }
-        WriteCategories();
-        RecipesServices.WriteRecipes();
+        await WriteCategoriesAsync();
+        await RecipesServices.WriteRecipesAsync();
         return Results.Json(titleToDelete, statusCode: 200);
     }
 
     public void Routing(IEndpointRouteBuilder router)
     {
-        router.MapGet("/categories", ReadCategories);
-        router.MapPost("/categories", AddCategory);
-        router.MapPut("/categories/{oldTitle}", UpdateCategory);
-        router.MapDelete("/categories/{titleToDelete}", DeleteCategory);
+        router.MapGet("/categories", ReadCategoriesAsync);
+        router.MapPost("/categories", AddCategoryAsync);
+        router.MapPut("/categories/{oldTitle}", UpdateCategoryAsync);
+        router.MapDelete("/categories/{titleToDelete}", DeleteCategoryAsync);
     }
 }
