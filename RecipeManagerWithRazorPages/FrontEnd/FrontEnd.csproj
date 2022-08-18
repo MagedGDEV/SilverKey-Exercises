@@ -15,6 +15,11 @@
   <ItemGroup>
     <Content Remove="wwwroot\images\" />
     <Content Remove="wwwroot\images\welcomeRecipes\" />
+    <Content Remove="wwwroot\recipeImages\161d5e6f-28dd-464d-89d0-91fbc694a759.jpeg" />
+    <Content Remove="wwwroot\recipeImages\5bfbe886-eee2-455d-bd03-014c5b37a661.jpeg" />
+    <Content Remove="wwwroot\recipeImages\001e7692-7fdd-4634-bf2f-43ea04da14b7.jpeg" />
+    <Content Remove="wwwroot\recipeImages\972d1b9f-b793-4139-b7e0-1a1b40563f04.jpeg" />
+    <Content Remove="wwwroot\recipeImages\ecffb10c-1878-45b5-b387-3330c8975405.jpeg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\images\" />

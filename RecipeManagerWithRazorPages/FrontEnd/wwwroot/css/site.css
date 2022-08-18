@@ -187,8 +187,32 @@ body {
     box-shadow: 2px 2px 2px #000000;
 }
 
-/*recipe cards styling*/
+/*add recipe styling*/
 
+.recipe-add-instruction {
+    margin-bottom:17px;
+}
+
+.recipe-add-categories {
+    overflow: scroll;
+    white-space: nowrap;
+    height: 40px;
+}
+
+.recipe-add-category {
+    font-size: 15px;
+    margin-right: 5px;
+    background-color: #5b6269;
+}
+
+.recipe-add-buttons {
+    border-top:0;
+}
+
+.recipe-added-category {
+    background-color: #259b35;
+}
+/*recipe cards styling*/
 .recipe-card-buttons {
     border: none;
     border-width: 0;
@@ -222,7 +246,7 @@ h5 {
     display: inline-block;
     min-width: 100%;
     white-space: nowrap;
-    text-overflow:clip
+    text-overflow:clip;
 }
 
 @keyframes marqueein {

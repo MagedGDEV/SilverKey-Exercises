@@ -11,7 +11,65 @@
             Add Recipe
         </button>
     </div>
-
+    @*Add Modal*@
+    <div class="modal fade" id="AddModal" tabindex="-1" aria-labelledby="AddModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Recipe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-page-handler="recipe">
+                        <div class="mb-3">
+                            <label for="recipeTitle" class="form-label">Recipe Title</label>
+                            <input type="text" class="form-control" id="recipeTitle" asp-for="RecipeTitle" aria-describedby="recipeHelp">
+                            <div id="recipeTitleHelp" class="form-text">Enter the name of the recipe.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipeImage" class="form-label">Recipe Image</label>
+                            <input class="form-control" type="file" id="recipe-Image">
+                        </div>
+                        <div id="ingredientsDiv" class="mb-3">
+                            <label class="form-label">Ingredients</label>
+                            <div id="ingredientdiv1" class="row">
+                                <div class="col-10">
+                                    <input class="form-control" id="ingredient1" placeholder="Ingredient">
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-secondary mb-3" id="ingredientAdd1">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="instructionsDiv" class="mb-3">
+                            <label class="form-label">Instructions</label>
+                            <div id="instructiondiv1" class="row recipe-add-instruction">
+                                <div class="col-10">
+                                    <textarea class="form-control" id="instruction1" placeholder="Instruction"></textarea>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-secondary mb-3" id="instructionAdd1">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categories</label>
+                            <div class="form-control recipe-add-categories">
+                                @for (int i = 0; i < @CategoriesRequests.Categories.Count; i++)
+                                {
+                                    <span class="badge rounded-pill recipe-add-category">@CategoriesRequests.Categories[i]</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="modal-footer recipe-add-buttons ">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="recipes-cards">
         @foreach (KeyValuePair<Guid, RecipeModel> recipe in RecipeRequests.Recipes)
         {
@@ -45,7 +103,90 @@
     </div>
 </div>
 
+<script type="text/javascript">
 
+    var ingredientCount = 1
+    $('#ingredientAdd1').click(function () { addNewIngredient();});
+
+    function addNewIngredient() {
+        var thisItem = ingredientCount;
+        var button = document.getElementById('ingredientAdd' + ingredientCount);
+        button.classList.remove('button-secondary');
+        button.classList.add('btn-danger');
+        button.innerHTML = '-';
+        console.log(button);
+        $('#ingredientAdd' + ingredientCount).attr('value', 'Remove');
+        $('#ingredientAdd' + ingredientCount).unbind();
+        $('#ingredientAdd' + ingredientCount).click(function () { removeIngredient(thisItem); });
+        
+        ingredientCount++;
+        var newItem = '<div id="ingredientdiv' + ingredientCount + '" class="row">'
+        newItem += '<div class="col-10">'
+        newItem += '<input class="form-control" id = "ingredient' + ingredientCount +'" placeholder="Ingredient"> </div>'
+        newItem += '<div class="col-2">'
+        newItem += '<button type="button" class="btn btn-secondary mb-3" id="ingredientAdd' + ingredientCount +'">+</button> </div>'
+        newItem += "</div>";
+
+        $('#ingredientsDiv').append(newItem);
+        $('#ingredientAdd' + ingredientCount).click(function () { addNewIngredient(); });
+
+        function removeIngredient(ingredientIndex) {
+            $('#ingredientdiv' + ingredientIndex).remove();
+        }
+    }
+
+    var instructionCount = 1
+    $('#instructionAdd1').click(function () { addNewInstruction(); });
+
+    function addNewInstruction() {
+        var thisItem = instructionCount;
+        var button = document.getElementById('instructionAdd' + instructionCount);
+        button.classList.remove('button-secondary');
+        button.classList.add('btn-danger');
+        button.innerHTML = '-';
+        console.log(button);
+        $('#instructionAdd' + instructionCount).attr('value', 'Remove');
+        $('#instructionAdd' + instructionCount).unbind();
+        $('#instructionAdd' + instructionCount).click(function () { removeInstruction(thisItem); });
+
+        instructionCount++;
+        var newItem = '<div id="instructiondiv' + instructionCount + '" class="row recipe-add-instruction">'
+        newItem += '<div class="col-10">'
+        newItem += '<textarea class="form-control" id = "instruction' + instructionCount + '" placeholder="Instruction"> </textarea></div>'
+        newItem += '<div class="col-2">'
+        newItem += '<button type="button" class="btn btn-secondary mb-3" id="instructionAdd' + instructionCount + '">+</button> </div>'
+        newItem += "</div>";
+
+        $('#instructionsDiv').append(newItem);
+        $('#instructionAdd' + instructionCount).click(function () { addNewInstruction(); });
+
+        function removeInstruction(instructionIndex) {
+            $('#instructiondiv' + instructionIndex).remove();
+        }
+    }
+
+    var addCategories = document.getElementsByClassName('recipe-add-category');
+    var selectedCategory = new Array(addCategories.length).fill(false);
+    var index = 0;
+    for (let i = 0; i < addCategories.length; i++) {
+        addCategories[i].addEventListener('click', function () {
+            successCategory(i, selectedCategory[i])
+        });
+    }
+
+    function successCategory(index,selected) {
+        if (selected) {
+            addCategories[index].classList.remove('recipe-added-category');
+            console.log(addCategories[index].innerHTML);
+            selectedCategory[index] = false;
+        }
+        else {
+            addCategories[index].classList.add('recipe-added-category');
+            console.log(addCategories[index].innerHTML);
+            selectedCategory[index] = true;
+        }
+    }
+</script>
 
 
 

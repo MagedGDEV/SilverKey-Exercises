@@ -11,6 +11,7 @@ namespace FrontEnd.Pages
     public class RecipesModel : PageModel
     {
         public Guid? RecipeId;
+        public string? RecipeTitle;
         public void OnGet()
         {
             RecipeRequests.GetRecipesImagesAsync().Wait();
@@ -21,6 +22,12 @@ namespace FrontEnd.Pages
         public ActionResult OnPostRecipePage(Guid recipeId)
         {
             return RedirectToPage("/RecipePage", new {recipeId});
+        }
+
+        public ActionResult OnPostRecipe(string recipeTitle)
+        {
+            Debug.Write(recipeTitle);
+            return RedirectToPage("/Recipes");
         }
     }
 }
