@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -11,6 +12,7 @@ static public class RecipeRequests
     static private string s_url = "https://magedgdev.azurewebsites.net/recipes";
     static private string s_editUrl = "https://magedgdev.azurewebsites.net/recipe";
     static private string s_urlImage = "https://magedgdev.azurewebsites.net/recipesWithImages";
+    static private string s_urlPostImage = "https://magedgdev.azurewebsites.net/recipesWithImage";
     static private HttpClient s_client = new();
     static public Dictionary<Guid, RecipeModel> Recipes = new();
 
@@ -73,7 +75,21 @@ static public class RecipeRequests
         var data = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await s_client.PostAsync(s_url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
+    }
+
+    static public async Task AddRecipeWithImageAsync (RecipeModel recipe, IFormFile image)
+    {
+        using var form = new MultipartFormDataContent();
+        {
+            using var imageContent = new StreamContent(image.OpenReadStream());
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue(image.ContentType);
+            form.Add(imageContent, "file", image.Name);
+            var json = JsonSerializer.Serialize(recipe);
+            form.Add(new StringContent(json), "recipe");
+            s_client.DefaultRequestHeaders.Add("Accept", "application/json");
+            var response = await s_client.PostAsync(s_urlPostImage, form);
+            _ = await response.Content.ReadAsStringAsync();
+        }
     }
 
     static public async Task AddRecipeIngredientsAsync(AddListModel ingredient, Guid recipeId)
@@ -83,7 +99,6 @@ static public class RecipeRequests
         string url =s_editUrl + $"/{recipeId}/ingredients";
         var response = await s_client.PostAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task AddRecipeInstructionsAsync(AddListModel instruction, Guid recipeId)
@@ -93,7 +108,6 @@ static public class RecipeRequests
         string url = s_editUrl + $"/{recipeId}/instructions";
         var response = await s_client.PostAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task AddRecipeCategoriesAsync(List<string> categories, Guid recipeId)
@@ -103,7 +117,6 @@ static public class RecipeRequests
         string url = s_editUrl + $"/{recipeId}/categories";
         var response = await s_client.PostAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     // Delete requests
@@ -117,7 +130,6 @@ static public class RecipeRequests
         };
         var response = await s_client.SendAsync(request);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task DeleteRecipeInstructionsAsync(List<string> instructions, Guid recipeId)
@@ -130,7 +142,6 @@ static public class RecipeRequests
         };
         var response = await s_client.SendAsync(request);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task DeleteRecipeCategoriesAsync(List<string> categories, Guid recipeId)
@@ -143,7 +154,6 @@ static public class RecipeRequests
         };
         var response = await s_client.SendAsync(request);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task DeleteRecipesAsync(Guid recipeId)
@@ -162,7 +172,6 @@ static public class RecipeRequests
         string url = s_editUrl + $"/{recipeId}/ingredient/{currentIngredient}";
         var response = await s_client.PutAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task UpdateRecipeInstructionsAsync(string currentInstruction, string updatedInstruction, Guid recipeId)
@@ -172,7 +181,6 @@ static public class RecipeRequests
         string url = s_editUrl + $"/{recipeId}/instruction/{currentInstruction}";
         var response = await s_client.PutAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 
     static public async Task UpdateRecipeTitleAsync(string newTitle, Guid recipeId)
@@ -182,7 +190,6 @@ static public class RecipeRequests
         string url = s_editUrl + $"/{recipeId}/title";
         var response = await s_client.PutAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
-        GetDictionaryOfRecipesAsync().Wait();
     }
 }
 

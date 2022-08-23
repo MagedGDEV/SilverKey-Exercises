@@ -5,13 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using System.IO.Compression;
 namespace FrontEnd.Pages
 {
     public class RecipesModel : PageModel
     {
+        [TempData]
+        public string Added { get; set; } = "";
+        [TempData]
+        public string Recipe { get; set; } = "";
         public Guid? RecipeId;
         public string? RecipeTitle;
+        public IFormFile? RecipeImage { get; set; }
+
         public void OnGet()
         {
             RecipeRequests.GetRecipesImagesAsync().Wait();
@@ -24,9 +30,15 @@ namespace FrontEnd.Pages
             return RedirectToPage("/RecipePage", new {recipeId});
         }
 
-        public ActionResult OnPostRecipe(string recipeTitle)
+        public ActionResult OnPostRecipe(string recipeTitle, IFormFile recipeImage)
         {
-            Debug.Write(recipeTitle);
+            string[] formIngredients = Request.Form["ingredient"];
+            string[] formInstructions = Request.Form["instruction"];
+            string[] formCategories = Request.Form["CategorySuccess"];
+            TempData["Added"] = "true";
+            TempData["Recipe"] = recipeTitle;
+            var newRecipe = new RecipeModel(recipeTitle, formIngredients.ToList(), formInstructions.ToList(), formCategories.ToList());
+            RecipeRequests.AddRecipeWithImageAsync(newRecipe, recipeImage).Wait();
             return RedirectToPage("/Recipes");
         }
     }
