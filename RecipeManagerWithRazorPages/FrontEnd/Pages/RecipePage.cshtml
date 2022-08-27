@@ -7,10 +7,114 @@
 @if (Model.Recipe!.ImageName != "")
 {
     <div class="page-position">
-        <div>
-            <h1 class="recipe-page-title">@Model.Recipe!.Title</h1>
-            <br />
+
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Recipe</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" asp-page-handler="edit" enctype="multipart/form-data" id="add-recipe-form">
+                            <div class="mb-3">
+                                <label for="recipeTitle" class="form-label">Recipe Title</label>
+                                <input class="form-control recipeTitle" asp-for="RecipeTitle" value=@Model.Recipe.Title aria-describedby="recipeHelp">
+                                <div id="recipeTitleHelp" class="form-text">Edit the name of the recipe.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipeImage" class="form-label">Recipe Image</label>
+                                <input class="form-control recipe-Image" type="file" accept="image/*" asp-for="RecipeImage">
+                            </div>
+                            <div id="ingredientsDiv" class="mb-3">
+                                <label class="form-label">Ingredients</label>
+                                @for (int i = 0; i < Model.Recipe.Ingredients.Count; i++)
+                                {
+                                    <div id="ingredientdiv@(i)" class="row">
+                                        <div class="col-10">
+                                            <input class="form-control ingredient" id="ingredient@(i)" placeholder="Ingredient" name="Ingredient" value="@Model.Recipe.Ingredients[i]">
+                                        </div>
+                                        <div class="col-2">
+                                            @if (i == (Model.Recipe.Ingredients.Count - 1))
+                                            {
+                                                <button type="button" class="btn btn-secondary mb-3" name="ingredientAdd" id="ingredientAdd@(i)">+</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-danger mb-3" name="ingredientRemove">-</button>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div id="instructionsDiv" class="mb-3">
+                                <label class="form-label">Instructions</label>
+                                @for (int i = 0; i < Model.Recipe.Instructions.Count; i++)
+                                {
+                                    <div id="instructiondiv@(i)" class="row recipe-add-instruction">
+                                        <div class="col-10">
+                                            <textarea class="form-control instruction" id="instruction@(i)" placeholder="Instruction" name="Instruction">@Model.Recipe.Instructions[i]</textarea>
+                                        </div>
+                                        <div class="col-2">
+                                            @if (i == (Model.Recipe.Instructions.Count - 1))
+                                            {
+                                                <button type="button" class="btn btn-secondary mb-3" name="instructionAdd" id="instructionAdd@(i)">+</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-danger mb-3" name="instructionRemove">-</button>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Categories</label>
+                                <div class="form-control recipe-add-categories">
+                                    @for (int i = 0; i < @CategoriesRequests.Categories.Count; i++)
+                                    {
+                                        if (Model.Recipe.Categories.Contains(CategoriesRequests.Categories[i]))
+                                        {
+                                            <span class="badge rounded-pill recipe-add-category recipe-added-category">@CategoriesRequests.Categories[i]</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill recipe-add-category">@CategoriesRequests.Categories[i]</span>
+                                        }
+                                        <input class="categories" hidden="hidden" value=@CategoriesRequests.Categories[i] name="Category">
+                                    }
+                                </div>
+                            </div>
+                            <input hidden="hidden" value=@Model.RecipeId asp-for="RecipeId">
+                            <div class="modal-footer recipe-add-buttons">
+                                <button type="submit" class="btn btn-success" id="add-submit" disabled>Save</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
+
+        <div class="recipe-with-buttons">
+            <h1 class="recipe-page-title inline">@Model.Recipe!.Title</h1>
+            <div class="recipe-buttons">
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#0f52fc" class="bi bi-pencil-fill categories-buttons" viewBox="0 0 16 16">
+                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                    </svg>
+                </button>
+
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#0f52fc" class="bi bi-trash-fill categories-buttons" viewBox="0 0 16 16">
+                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <br />
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -62,7 +166,7 @@
                         <div class="recipe-categories">
                             @for (int i = 0; i < Model.Recipe!.Categories.Count; i++)
                             {
-                                    <span class="badge rounded-pill recipe-category">@Model.Recipe!.Categories[i]</span>
+                                <span class="badge rounded-pill recipe-category">@Model.Recipe!.Categories[i]</span>
                             }
                         </div>
                     </div>
@@ -75,3 +179,165 @@
     </div>
 
 }
+
+<script type="text/javascript">
+
+    $('#add-recipe-form :input').change(function () {
+        checkSubmitButton();
+    });
+
+    var ingredientsCount = @Model.Recipe.Ingredients.Count - 1;
+    var ingredientRemoveButtons = document.getElementsByName('ingredientRemove');
+    var ingredientAddButtons = document.getElementsByName('ingredientAdd');
+    for (let i = 0; i < ingredientRemoveButtons.length; i++) {
+        ingredientRemoveButtons[i].addEventListener('click', function () {
+            removeItem('ingredientdiv', i);
+        });
+    }
+    for (let i = 0; i < ingredientAddButtons.length; i++) {
+        var addHandler = function () {
+            addNewIngredient();
+        }
+        ingredientAddButtons[i].addEventListener('click', addHandler);
+    }
+
+    var instructionsCount = @Model.Recipe.Instructions.Count - 1;
+    var instructionRemoveButtons = document.getElementsByName('instructionRemove');
+    var instructionAddButtons = document.getElementsByName('instructionAdd');
+    for (let i = 0; i < instructionRemoveButtons.length; i++) {
+        instructionRemoveButtons[i].addEventListener('click', function () {
+            removeItem('instructiondiv', i);
+        });
+    }
+    for (let i = 0; i < instructionAddButtons.length; i++) {
+        var addHandler = function () {
+            addNewInstruction();
+        }
+        instructionAddButtons[i].addEventListener('click', addHandler);
+    }
+
+    function removeItem(listName, index) {
+        $('#' + listName + index).remove()
+    }
+
+    function addNewIngredient() {
+        var thisItem = ingredientsCount;
+        var button = document.getElementById('ingredientAdd' + ingredientsCount);
+        button.removeEventListener('click', addHandler);
+        button.classList.remove('button-secondary');
+        button.classList.add('btn-danger');
+        button.innerHTML = '-'
+        $('#ingredientAdd' + ingredientsCount).attr('value', 'Remove');
+        $('#ingredientAdd' + ingredientsCount).unbind();
+        $('#ingredientAdd' + ingredientsCount).click(function () {removeItem('ingredientdiv', thisItem); });
+        ingredientsCount++;
+
+        var newItem = '<div id="ingredientdiv' + ingredientsCount + '" class="row">'
+        newItem += '<div class="col-10">'
+        newItem += '<input class="form-control ingredient" id = "ingredient' + ingredientsCount + '" placeholder="Ingredient" name="Ingredient"> </div>'
+        newItem += '<div class="col-2">'
+        newItem += '<button type="button" class="btn btn-secondary mb-3" id="ingredientAdd' + ingredientsCount + '">+</button> </div>'
+        newItem += "</div>";
+
+        $('#ingredientsDiv').append(newItem);
+        $('#ingredientAdd' + ingredientsCount).click(function () { addNewIngredient(); });
+
+        checkSubmitButton();
+        $('#add-recipe-form :input').change(function () {
+            checkSubmitButton();
+        });
+    }
+
+    function addNewInstruction() {
+        var thisItem = instructionsCount;
+        var button = document.getElementById('instructionAdd' + instructionsCount);
+        button.removeEventListener('click', addHandler);
+        button.classList.remove('button-secondary');
+        button.classList.add('btn-danger');
+        button.innerHTML = '-';
+        $('#instructionAdd' + instructionsCount).attr('value', 'Remove');
+        $('#instructionAdd' + instructionsCount).unbind();
+        $('#instructionAdd' + instructionsCount).click(function () { removeItem('instructiondiv', thisItem); });
+        instructionsCount++;
+
+        var newItem = '<div id="instructiondiv' + instructionsCount + '" class="row recipe-add-instruction">'
+        newItem += '<div class="col-10">'
+        newItem += '<textarea class="form-control instruction" id = "instruction' + instructionsCount + '" placeholder="Instruction" name="Instruction"></textarea></div>'
+        newItem += '<div class="col-2">'
+        newItem += '<button type="button" class="btn btn-secondary mb-3" id="instructionAdd' + instructionsCount + '">+</button> </div>'
+        newItem += "</div>";
+
+        $('#instructionsDiv').append(newItem);
+        $('#instructionAdd' + instructionsCount).click(function () { addNewInstruction(); });
+
+        checkSubmitButton();
+        $('#add-recipe-form :input').change(function () {
+            checkSubmitButton();
+        });
+    }
+
+    var addCategories = document.getElementsByClassName('recipe-add-category');
+    var categoriesInput = document.getElementsByClassName('categories');
+    var selectedCategory = new Array(addCategories.length).fill(false);
+    var index = 0;
+    for (let i = 0; i < addCategories.length; i++) {
+        addCategories[i].addEventListener('click', function () {
+            successCategory(i, selectedCategory[i])
+        });
+    }
+
+    function successCategory(index, selected) {
+        if (selected) {
+            addCategories[index].classList.remove('recipe-added-category');
+            categoriesInput[index].setAttribute('name', 'Category');
+            selectedCategory[index] = false;
+            checkSubmitButton();
+        }
+        else {
+            addCategories[index].classList.add('recipe-added-category');
+            categoriesInput[index].setAttribute('name', 'CategorySuccess');
+            selectedCategory[index] = true;
+            checkSubmitButton();
+        }
+    }
+
+    var enableSubmit = false;
+    function checkSubmitButton() {
+        var recipeTitle = document.getElementsByClassName('recipeTitle');
+        var recipeImage = document.getElementsByClassName('recipe-Image');
+        var recipeIngredients = document.getElementsByClassName('ingredient');
+        var recipeInstructions = document.getElementsByClassName('instruction');
+        var recipeCategories = document.getElementsByClassName('recipe-added-category');
+        enableSubmit = true;
+        enableSubmit &= recipeTitle[0].value != "";
+        for (var i = 0; i < recipeIngredients.length; i++) {
+            if (recipeIngredients[i].value == "") {
+                enableSubmit = false;
+            }
+        }
+
+        for (var i = 0; i < recipeInstructions.length; i++) {
+            if (recipeInstructions[i].value == "") {
+                enableSubmit = false;
+            }
+        }
+        if (recipeCategories.length == 0) {
+            enableSubmit = false;
+        }
+        if (enableSubmit) {
+            document.querySelector('#add-submit').disabled = false;
+        }
+        else {
+            document.querySelector('#add-submit').disabled = true;
+        }
+    }
+
+    if ('@TempData["Added"]' == "true") {
+        Swal.fire({
+            icon: 'success',
+            title: '@TempData["Recipe"] is added',
+            showConfirmButton: false,
+            timer: 2000
+        })
+    }
+</script>

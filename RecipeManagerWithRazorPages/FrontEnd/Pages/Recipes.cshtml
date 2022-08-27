@@ -172,7 +172,6 @@
         }
         checkSubmitButton();
         $('#add-recipe-form :input').change(function () {
-            console.log("kerjgeorgjer");
             checkSubmitButton();
         });
     }
@@ -219,7 +218,6 @@
         }
 
         for (var i = 0; i < recipeInstructions.length; i++) {
-            console.log(recipeInstructions[i].value);
             if (recipeInstructions[i].value == "") {
                 enableSubmit = false;
             }
@@ -227,7 +225,6 @@
         if (recipeCategories.length == 0) {
             enableSubmit = false;
         }
-        console.log(enableSubmit);
         if (enableSubmit) {
             document.querySelector('#add-submit').disabled = false;
         }

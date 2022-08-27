@@ -12,10 +12,23 @@ namespace FrontEnd.Pages
     {
         public Guid RecipeId;
         public RecipeModel? Recipe;
+        public string? RecipeTitle;
+        public IFormFile? RecipeImage { get; set; }
         public void OnGet(Guid recipeId)
         {
             RecipeId = recipeId;
             Recipe = RecipeRequests.Recipes[recipeId];
+        }
+
+        public ActionResult OnPostEdit (string recipeTitle, IFormFile recipeImage, Guid recipeId)
+        {
+            if (recipeImage != null)
+            {
+                RecipeRequests.UpdateRecipeImageAsync(recipeImage!, recipeId).Wait();
+            }
+
+            RecipeRequests.GetRecipesImagesAsync().Wait();
+            return RedirectToPage("/RecipePage", new {recipeId});
         }
     }
 }

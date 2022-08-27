@@ -346,3 +346,11 @@ h5 {
     margin-right: 10px;
     background-color: #0AA1DD;
 }
+
+.recipe-with-buttons {
+    overflow: auto;
+}
+
+.recipe-buttons {
+    float:right;
+}

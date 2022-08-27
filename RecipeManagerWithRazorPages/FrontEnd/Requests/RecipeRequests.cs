@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 static public class RecipeRequests
 {
@@ -86,7 +87,6 @@ static public class RecipeRequests
             form.Add(imageContent, "file", image.Name);
             var json = JsonSerializer.Serialize(recipe);
             form.Add(new StringContent(json), "recipe");
-            s_client.DefaultRequestHeaders.Add("Accept", "application/json");
             var response = await s_client.PostAsync(s_urlPostImage, form);
             _ = await response.Content.ReadAsStringAsync();
         }
@@ -190,6 +190,19 @@ static public class RecipeRequests
         string url = s_editUrl + $"/{recipeId}/title";
         var response = await s_client.PutAsync(url, data);
         _ = await response.Content.ReadAsStringAsync();
+    }
+
+    static public async Task UpdateRecipeImageAsync(IFormFile image, Guid recipeId)
+    {
+        using var form = new MultipartFormDataContent();
+        {
+            using var imageContent = new StreamContent(image.OpenReadStream());
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue(image.ContentType);
+            form.Add(imageContent, "file", image.Name);
+            string url = s_editUrl + $"/{recipeId}/image";
+            var response = await s_client.PutAsync(url, form);
+            _ = await response.Content.ReadAsStringAsync();
+        }
     }
 }
 
