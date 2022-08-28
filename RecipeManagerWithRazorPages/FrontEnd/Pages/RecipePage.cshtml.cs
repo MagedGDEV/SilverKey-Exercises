@@ -29,6 +29,11 @@ namespace FrontEnd.Pages
             string[] formIngredients = Request.Form["ingredient"];
             string[] formInstructions = Request.Form["instruction"];
             string[] formCategories = Request.Form["CategorySuccess"];
+            RecipeRequests.GetDictionaryOfRecipesAsync().Wait();
+            var newRecipe = new RecipeModel(recipeTitle, formIngredients.ToList(), formInstructions.ToList(), formCategories.ToList());
+            newRecipe.ImageName = RecipeRequests.Recipes[recipeId].ImageName;
+            RecipeRequests.UpdateRecipeAsync(newRecipe, recipeId).Wait();
+            RecipeRequests.GetDictionaryOfRecipesAsync().Wait();
             RecipeRequests.GetRecipesImagesAsync().Wait();
             return RedirectToPage("/RecipePage", new {recipeId});
         }

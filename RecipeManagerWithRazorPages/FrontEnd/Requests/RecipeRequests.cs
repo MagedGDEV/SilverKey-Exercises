@@ -192,6 +192,15 @@ static public class RecipeRequests
         _ = await response.Content.ReadAsStringAsync();
     }
 
+    static public async Task UpdateRecipeAsync (RecipeModel updatedRecipe, Guid recipeId)
+    {
+        var json = JsonSerializer.Serialize(updatedRecipe);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        string url = s_editUrl + $"/{recipeId}";
+        var response = await s_client.PutAsync(url, data);
+        _ = await response.Content.ReadAsStringAsync();
+    }
+
     static public async Task UpdateRecipeImageAsync(IFormFile image, Guid recipeId)
     {
         using var form = new MultipartFormDataContent();

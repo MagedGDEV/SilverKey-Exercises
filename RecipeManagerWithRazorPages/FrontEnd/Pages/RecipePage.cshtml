@@ -76,12 +76,14 @@
                                         if (Model.Recipe.Categories.Contains(CategoriesRequests.Categories[i]))
                                         {
                                             <span class="badge rounded-pill recipe-add-category recipe-added-category">@CategoriesRequests.Categories[i]</span>
+                                            <input class="categories" hidden="hidden" value="@CategoriesRequests.Categories[i]" name="CategorySuccess">
                                         }
                                         else
                                         {
                                             <span class="badge rounded-pill recipe-add-category">@CategoriesRequests.Categories[i]</span>
+                                            <input class="categories" hidden="hidden" value="@CategoriesRequests.Categories[i]" name="Category">
                                         }
-                                        <input class="categories" hidden="hidden" value=@CategoriesRequests.Categories[i] name="Category">
+
                                     }
                                 </div>
                             </div>
