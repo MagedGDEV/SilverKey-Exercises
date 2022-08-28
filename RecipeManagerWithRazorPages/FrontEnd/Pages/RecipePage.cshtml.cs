@@ -26,7 +26,9 @@ namespace FrontEnd.Pages
             {
                 RecipeRequests.UpdateRecipeImageAsync(recipeImage!, recipeId).Wait();
             }
-
+            string[] formIngredients = Request.Form["ingredient"];
+            string[] formInstructions = Request.Form["instruction"];
+            string[] formCategories = Request.Form["CategorySuccess"];
             RecipeRequests.GetRecipesImagesAsync().Wait();
             return RedirectToPage("/RecipePage", new {recipeId});
         }

@@ -183,6 +183,13 @@ public class RecipesServices
         return Results.Json(categoriesToAdd, statusCode: 200);
     }
 
+    private async Task<IResult> EditRecipeAsync(Guid recipeId, [FromBody] RecipeModel editedRecipe)
+    {
+        Recipes[recipeId] = editedRecipe;
+        await WriteRecipesAsync();
+        return Results.Json(Recipes[recipeId], statusCode: 200);
+    }
+
     public void Routing(IEndpointRouteBuilder router)
     {
         router.MapGet("/recipes", ReadRecipesAsync);
@@ -192,6 +199,7 @@ public class RecipesServices
         router.MapGet("/recipes/{recipeId}", GetRecipe);
         router.MapDelete("/recipes/{recipeId}", DeleteRecipeAsync);
         router.MapPut("/recipe/{recipeId}/title", EditRecipeTitleAsync);
+        router.MapPut("recipe/{recipeId}", EditRecipeAsync);
         // Editing recipe's ingredients
         router.MapDelete("/recipe/{recipeId}/ingredients", DeleteRecipeIngredientsAsync);
         router.MapPost("/recipe/{recipeId}/ingredients", AddRecipeIngredientsAsync);
