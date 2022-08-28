@@ -7,7 +7,27 @@
 @if (Model.Recipe!.ImageName != "")
 {
     <div class="page-position">
-
+        @*Delete Modal*@
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body modal-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#F9C398" class="bi bi-exclamation-circle modal-icon" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                        </svg>
+                        <div class="modal-question">Are you sure you want to delete <span class="modal-item">"@Model.Recipe.Title"</span>?</div>
+                        <div class="modal-text">You won't be able to revert this!</div>
+                        <form method="post" asp-page-handler="delete" class="inline">
+                            <input asp-for="RecipeId" value="@Model.RecipeId" hidden="hidden" />
+                            <button type="submit" class="btn btn-danger modal-buttons" data-bs-dismiss="modal">Yes, delete it!</button>
+                        </form>
+                        <button type="button" class="btn btn-secondary modal-buttons" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*Edit Modal*@
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -97,8 +117,6 @@
                 </div>
             </div>
         </div>
-
-
 
         <div class="recipe-with-buttons">
             <h1 class="recipe-page-title inline">@Model.Recipe!.Title</h1>
@@ -334,12 +352,20 @@
         }
     }
 
-    if ('@TempData["Added"]' == "true") {
+    if ('@TempData["RecipeRequest"]' == "editTrue") {
         Swal.fire({
             icon: 'success',
-            title: '@TempData["Recipe"] is added',
+            title: '@TempData["RecipeAlert"] is edited',
             showConfirmButton: false,
             timer: 2000
+        })
+    }
+    else if ('@TempData["RecipeRequest"]' == "editFalse") {
+        Swal.fire({
+            icon: 'error',
+            title: '@TempData["RecipeAlert"] is already available, use another title',
+            showConfirmButton: false,
+            timer: 3000
         })
     }
 </script>

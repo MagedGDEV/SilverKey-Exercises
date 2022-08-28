@@ -58,7 +58,7 @@
                                 @for (int i = 0; i < @CategoriesRequests.Categories.Count; i++)
                                 {
                                     <span class="badge rounded-pill recipe-add-category">@CategoriesRequests.Categories[i]</span>
-                                    <input class="categories" hidden="hidden" value=@CategoriesRequests.Categories[i] name="Category">
+                                    <input class="categories" hidden="hidden" value="@CategoriesRequests.Categories[i]" name="Category">
                                 }
                             </div>
                         </div>
@@ -237,6 +237,22 @@
         Swal.fire({
             icon: 'success',
             title: '@TempData["Recipe"] is added',
+            showConfirmButton: false,
+            timer: 2000
+        })
+    }
+    else if ('@TempData["Added"]' == "false") {
+        Swal.fire({
+            icon: 'error',
+            title: '@TempData["Recipe"] is already available, use another title',
+            showConfirmButton: false,
+            timer: 3000
+        })
+    }
+    else if ('@TempData["RecipeRequest"]' == "delete") {
+        Swal.fire({
+            icon: 'success',
+            title: '@TempData["RecipeAlert"] is removed',
             showConfirmButton: false,
             timer: 2000
         })

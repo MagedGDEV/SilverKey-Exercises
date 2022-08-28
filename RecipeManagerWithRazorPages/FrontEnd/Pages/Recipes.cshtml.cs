@@ -35,10 +35,18 @@ namespace FrontEnd.Pages
             string[] formIngredients = Request.Form["ingredient"];
             string[] formInstructions = Request.Form["instruction"];
             string[] formCategories = Request.Form["CategorySuccess"];
-            TempData["Added"] = "true";
+            var allTitles = RecipeRequests.Recipes.Select(recipe => recipe.Value.Title).ToList();
             TempData["Recipe"] = recipeTitle;
-            var newRecipe = new RecipeModel(recipeTitle, formIngredients.ToList(), formInstructions.ToList(), formCategories.ToList());
-            RecipeRequests.AddRecipeWithImageAsync(newRecipe, recipeImage).Wait();
+            if (allTitles.Contains(recipeTitle))
+            {
+                TempData["Added"] = "false";
+            }
+            else
+            {
+                TempData["Added"] = "true";
+                var newRecipe = new RecipeModel(recipeTitle, formIngredients.ToList(), formInstructions.ToList(), formCategories.ToList());
+                RecipeRequests.AddRecipeWithImageAsync(newRecipe, recipeImage).Wait();
+            }
             return RedirectToPage("/Recipes");
         }
     }
